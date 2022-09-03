@@ -27,7 +27,7 @@ your_FTP_password
 ```bash
 crontab -e
 ```
-add line in script (user - pi) (termina - lxterminal)
+add line in script (user - pi) (terminal - lxterminal)
 ```bash
 @reboot sleep 20 && export DISPLAY=:0 && cd /home/pi/web_lab/ && sudo -u pi lxterminal -e python3 run.py
 ```
@@ -64,7 +64,8 @@ The server can be run on a local computer, for example raspberry pi.
 An intermediary, ngrok, is used to determine the server address.
 
 The service is provided as is, for personal use.
-![index|200][photo_2022-09-03_23-17-04.jpg] ![test|200][photo_2022-09-03_23-17-06.jpg] ![result|200][photo_2022-09-03_23-17-08.jpg]
+
+<img src="https://github.com/gav998/web_lab/blob/main/photo_2022-09-03_23-17-04.jpg" height="200"> <img src="https://github.com/gav998/web_lab/blob/main/photo_2022-09-03_23-17-06.jpg" height="200"> <img src="https://github.com/gav998/web_lab/blob/main/photo_2022-09-03_23-17-08.jpg" height="200">
 # Описание
 Сервис для тестирования учащихся.
 Автоматически генерируются тесты на языке программирования Python.
