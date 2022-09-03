@@ -1,0 +1,3 @@
+ftp://your_server.com/http/
+your_FTP_login
+your_FTP_password

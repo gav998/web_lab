@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Список тестов</title>
+    <link href="./bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+    <script src="./bootstrap.bundle.min.js"></script>
+	<script src="./conf.js"></script>
+	
+	
+	
+	
+	<div class="container">
+	  <div class="row">
+
+		<div class="col">
+		
+			<form class="row g-3" onsubmit="return false;" name="my">
+			  <div class="col-6">
+				<label for="inputName" class="form-label">Фамилия</label>
+				<input type="text" class="form-control" name="inputName" value="" autocomplete="off" required>
+			  </div>
+			  <div class="col-3">
+				<label for="inputNum" class="form-label">Класс</label>
+				<select class="form-select" name="inputNum" required>
+				  <option selected disabled value="">Choose...</option>
+				  <option>7</option>
+				  <option>8</option>
+				  <option>9</option>
+				  <option>10</option>
+				  <option>11</option>				  
+				</select>
+			  </div>
+			  <div class="col-3">
+				<label for="inputLetter" class="form-label">Буква</label>
+				<select class="form-select" name="inputLetter" required>
+				  <option selected disabled value="">Choose...</option>
+				  <option>А</option>
+				  <option>Б</option>
+				  <option>В</option>
+				  <option>Г</option>
+				  <option>Д</option>
+				  <option>Е</option>
+				  <option>К</option>
+				</select>
+			  </div>
+			  
+			  <div class="col-12 btn-group-vertical" role="group" id='TEST_LIST'>
+						
+				
+				<div class="text-center">
+				  <div class="spinner-border m-5" role="status">
+					<span class="visually-hidden">Loading...</span>
+				  </div>
+				</div>
+				
+			  </div>
+			</form>
+		
+		</div>
+
+	  </div>
+	</div>
+
+
+			<script>
+			
+				console.log("Инициализация API функции получения списка тестов get_test_list() по адр test_list");
+		
+				async function get_test_list() {
+					console.log("get_test_list");
+					
+					let url = server + "test_list/"
+					
+					let response = await fetch(url);
+
+					if (response.ok) { // если HTTP-статус в диапазоне 200-299
+					  // получаем тело ответа
+					  let json = await response.json();
+					  console.log(json);
+					  return json;
+					} else {
+					  alert("Ошибка HTTP: " + response.status);
+					}
+				}
+
+
+				console.log("Запрос списка тестов у сервера");			
+				get_test_list().then(
+					response => {
+						console.log("Получен список тестов у сервера");	
+						let msg = ""
+						for (let key in response){
+							msg = msg + '<button type="submit" class="btn btn-outline-primary text-start" onClick="send_choice_and_get_uuid('+ "'" + response[key] + "'" + ');">'+response[key]+'</button>'
+						}
+						document.getElementById('TEST_LIST').innerHTML = msg;
+					},
+					error => alert(`Rejected: ${error}`)
+				  );
+			</script>
+			
+			
+			<script>
+			
+				console.log("Инициализация API функции получения UUID теста send_choice_and_get_uuid(test) по адр get_uuid и редирект на тест");
+				async function send_choice_and_get_uuid(test) {
+					console.log("send_choise_and_get_uuid");
+					
+					let form = document.forms.my; 
+					
+					let name = form.elements.inputName.value;
+					let num = form.elements.inputNum.value;
+					let letter = form.elements.inputLetter.value;
+					
+					if (letter == false || num == false || name == false) {
+						alert("Вы не указали свои данные!");
+						return false;
+					}
+					
+					let url = new URL(server + "get_uuid/");
+					url.searchParams.set('test', test);
+					url.searchParams.set('name', name);
+					url.searchParams.set('num', num);
+					url.searchParams.set('letter', letter);
+					
+					let response = await fetch(url);
+
+					if (response.ok) { // если HTTP-статус в диапазоне 200-299
+					  // получаем тело ответа
+					  let json = await response.json();
+					  console.log(json);
+					  document.location.href = './test.html?UUID='+json['UUID'];
+					  return json;
+					} else {
+					  alert("Ошибка HTTP: " + response.status);
+					}
+				}
+			</script>
+			
+	
+  </body>
+</html>

@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Форма тестирования</title>
+    <link href="./bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+    <script src="./bootstrap.bundle.min.js"></script>
+	<script src="./conf.js"></script>
+	
+	<div class="container">
+	  <div class="row border-bottom border-primary py-3">
+		<div class="col d-grid gap-2 mx-auto">			
+		  <a id="HREF" class="btn btn-outline-primary" href=""></a>	
+		</div>
+	  </div>
+	</div>		
+	
+	<div class="container">
+	  <div class="row border-bottom border-primary py-3">
+
+		<div class="col btn-group" role="group" id='NAV_LIST'>
+		
+			<div class="text-center">
+			  <div class="spinner-border m-5" role="status">
+				<span class="visually-hidden">Loading...</span>
+			  </div>
+			</div>
+			
+		</div>		
+
+	  </div>
+	</div>	
+	
+	
+	<div class="container">
+	  <div class="row py-3">	  
+	  
+		<div class="col-8" id='TASK_TEXT'>
+
+			<div class="text-center">
+			  <div class="spinner-border m-5" role="status">
+				<span class="visually-hidden">Loading...</span>
+			  </div>
+			</div>
+		
+		</div>
+		<div class="col-4 border-start border-primary">
+			<form onsubmit="return false;">
+			  <div class="mb-3">
+				<label for="ANSW" class="form-label">Ответ:</label>
+				<input type="text" class="form-control" id="ANSW" autocomplete="off">
+			  </div>
+			  <div class="col d-grid gap-2 d-md-block">
+			    <button class="btn btn-primary" onClick="set_answ();">Сохранить</button>
+			    <button class="btn btn-outline-success" id="ANSW_TIME" disabled></button>
+			  </div>
+			</form>
+		</div>
+	  </div>
+	</div>
+
+
+			<script>
+				console.log("Начало работы");
+				
+				function read_get_values() {
+					console.log("Чтение GET параметров");
+					var p_url=location.search.substring(1);
+					var parametr=p_url.split("&");				
+					var values= new Array();
+					for(let i=0; i < parametr.length; i++){
+						j=parametr[i].split("="); 
+						values[j[0]]=unescape(j[1]);
+					}
+					console.log(values);
+					return values
+				}
+				var values = read_get_values();
+				var UUID = values["UUID"];
+				var task = 1;
+				function set_task(t) {
+					task = t;
+					console.log("Выбрано задание №" + task);	
+				}
+				
+				
+				
+			</script>
+			
+			<script>
+				console.log("Инициализация API функции получения инфо и текста задания get_test() используя UUID, task по адр get_test");	
+
+				async function get_test() {
+					console.log("get_test()");
+					let url = new URL(server + "get_test/");
+					url.searchParams.set('UUID', UUID);
+					url.searchParams.set('task', task);					
+					let response = await fetch(url);
+					if (response.ok) { // если HTTP-статус в диапазоне 200-299
+					  // получаем тело ответа
+					  let json = await response.json();
+					  console.log(json);
+					  console.log("Добавляем на страницу инфо о тесте");
+						document.getElementById('HREF').innerHTML = location.href;	
+						document.getElementById('HREF').href = location.href;
+						
+						count = json['COUNT'];
+						update_nav_list();
+						
+						console.log("Добавляем на страницу текст задания и ответ пользователя");
+						document.getElementById('TASK_TEXT').innerHTML = json['TASK_TEXT'];
+						document.getElementById('ANSW_TIME').innerHTML = (json['ANSW_TIME'] != null) ? json['ANSW_TIME'].slice(0, 19) : "";
+						document.getElementById('ANSW').value = json['ANSW'];
+					} else {
+					  alert("Ошибка HTTP: " + response.status);
+					}
+				}
+
+				get_test()
+				
+			</script>			
+			
+			<script>
+				console.log("Инициализация API функции отправки ответа по нажатию кнопки set_answ() используя ANSW по адр set_answ");	
+
+				
+				async function set_answ()
+				{
+					console.log("set_answ()");	
+						let answ = document.getElementById('ANSW').value
+					let url = new URL(server + "set_answ/");
+					url.searchParams.set('UUID', UUID);
+					url.searchParams.set('task', task);	
+					url.searchParams.set('answ', answ);
+					let response = await fetch(url);
+					if (response.ok) { // если HTTP-статус в диапазоне 200-299
+					  // получаем тело ответа
+					  let json = await response.json();
+					  console.log(json);
+					  document.getElementById('ANSW_TIME').innerHTML = (json['ANSW_TIME'] != null) ? json['ANSW_TIME'].slice(0, 19) : "";
+					} else {
+					  alert("Ошибка HTTP: " + response.status);
+					}
+				}
+
+			</script>
+
+			
+			
+			
+			<script>
+				console.log("Вставка номеров заданий в блок навигации");
+				
+				var count;
+				function update_nav_list(){
+					let nav_list = "";
+					let active = "";
+					
+					nav_list = nav_list + '<button class="btn btn-outline-danger" onclick="end()">Завершить</button>'
+					for(let i = 1; i<=count; i++){
+						if(i == task){
+							active = "btn-primary";
+						}else{
+							active = "btn-outline-primary";
+						}
+						nav_list = nav_list + '<button class="btn '+active+'" onClick="set_task('+i+');get_test()">'+i+'</button>';
+					}
+					document.getElementById('NAV_LIST').innerHTML = nav_list;
+				}
+			</script>
+			
+			<script>				
+				function end(){
+					document.location.href = './result.html?UUID='+UUID;
+				}
+			</script>			
+
+		  
+		
+	
+  </body>
+</html>
