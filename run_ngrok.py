@@ -6,6 +6,16 @@ import subprocess
 from sys import platform
 
 
+def start_tunnels():
+    print("start_tunnels")
+    if "win" in platform:
+        proc = subprocess.Popen("ngrok http 9090", shell=True)
+    else:
+        proc = subprocess.Popen("lxterminal -e ngrok http 9090", shell=True)
+    time.sleep(5)
+    update_conf(get_tunnels())
+    return proc
+
 def get_tunnels():
     print("get_tunnels")
     os.system("curl  http://localhost:4040/api/tunnels > ./tunnels.json")
@@ -23,17 +33,9 @@ def get_tunnels():
         print('tunnels.json unknown')
         return False
 
-def start_tunnels():
-    print("start_tunnels")
-    if "win" in platform:
-        proc = subprocess.Popen("ngrok http 9090", shell=True)
-    else:
-        proc = subprocess.Popen("lxterminal -e ngrok http 9090", shell=True)
-    time.sleep(5)
-    update_conf(get_tunnels())
-    return proc
 
 
+'''
 def start_serv():
     print("start_serv")
     if "win" in platform:
@@ -41,7 +43,7 @@ def start_serv():
     else:
         subprocess.Popen("cd ./server/ && lxterminal -e python3 ./server.py", shell=True)
     time.sleep(5)
-
+'''
 
 def restart_tunnels():
     print("restart_tunnels")
@@ -49,7 +51,7 @@ def restart_tunnels():
     proc.terminate()
     time.sleep(5)
     proc = start_tunnels()
-    time.sleep(5)
+    time.sleep(15)
 
 
 def update_conf(tunnels):
@@ -57,15 +59,10 @@ def update_conf(tunnels):
     with open('./client/conf.js', "a") as conf_file:
         conf_file.write(f"// {datetime.datetime.today()}\n")
         conf_file.write(f'server = "{tunnels}"\n\n')
-    os.system(f"curl -T ./client/conf.js {ftp} --user {user}:{password}")
-    
-    
-def update_client():
-    print("update_client")
-    os.system(f"curl -T ./client/conf.js {ftp} --user {user}:{password}")
-    os.system(f"curl -T ./client/index.html {ftp} --user {user}:{password}")
-    os.system(f"curl -T ./client/test.html {ftp} --user {user}:{password}")
-    os.system(f"curl -T ./client/result.html {ftp} --user {user}:{password}")
+    if "win" in platform:
+        os.system("python ./upload_conf_ftp.py")
+    else:
+        os.system("lxterminal -e python3 ./upload_conf_ftp.py")
     
 
 with open('./config_ftp.txt') as config_ftp:
@@ -76,8 +73,7 @@ with open('./config_ftp.txt') as config_ftp:
     time.sleep(1)
 
 
-start_serv()
-update_client()
+
 proc = start_tunnels()
 time.sleep(5)
 
