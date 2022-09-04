@@ -25,7 +25,8 @@
 		  <button class="btn border-0" id="NAME"></button>
 		  <button class="btn border-0" id="NUM"></button>
 		  <button class="btn border-0" id="LETTER"></button>
-		  <button class="btn border-0" id="TIME_START"></button>		
+		  <button class="btn border-0" id="TIME_START"></button>
+		  <button class="btn border-0" id="PROCENT"></button>		  
 		</div>
 	  </div>
 	</div>	
@@ -95,25 +96,28 @@
 						document.getElementById('LETTER').innerHTML = json['LETTER'];
 						document.getElementById('TIME_START').innerHTML = (json['TIME_START'] != null) ? json['TIME_START'].slice(0, 19) : "";
 						var count = json['COUNT'];
+						let count_success = 0;
 						
 						var msg = ""
 						for (let i = 1; i <= count; i++){
 							if (json['T_'+i+'_ANSW'] == json['T_'+i+'_ANSW_CORRECT']){
-								msg = msg + '<tr class="table-success">'
+								msg = msg + '<tr class="table-success">';
+								count_success = count_success + 1;
 							}else{
-								msg = msg + '<tr class="table-danger">'
+								msg = msg + '<tr class="table-danger">';
 							}
-							msg = msg + '<th scope="row">'+i+'</th>'
-							msg = msg + '<td >'+json['T_'+i+'_ANSW']+'</td>'
-							msg = msg + '<td >'+json['T_'+i+'_ANSW_CORRECT']+'</td>'
+							msg = msg + '<th scope="row">'+i+'</th>';
+							msg = msg + '<td >'+json['T_'+i+'_ANSW']+'</td>';
+							msg = msg + '<td >'+json['T_'+i+'_ANSW_CORRECT']+'</td>';
 						}
 						document.getElementById('RES_TABLE').innerHTML = msg;
+						document.getElementById('PROCENT').innerHTML = String(count_success/count*100).slice(0, 2)+"%";
 					} else {
 					  alert("Ошибка HTTP: " + response.status);
 					}
 				}
 				
-				get_full_test_and_lock()
+				get_full_test_and_lock();
 			</script>			
 			
 
