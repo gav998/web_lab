@@ -44,6 +44,7 @@ def tbl_get_test(UUID, TASK):
                     "LETTER": test["LETTER"],
                     "TIME_START": test["TIME_START"],
                     "COUNT": test["COUNT"],
+                    "LOCK": test["LOCK"],
                     
                     "TASK_TEXT": test["T_"+TASK+"_TEXT"],
                     "ANSW": test["T_"+TASK+"_ANSW"],

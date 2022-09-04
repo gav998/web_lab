@@ -23,6 +23,7 @@
 	  <div class="row border-bottom border-primary py-3">
 		<div class="col d-grid gap-2 mx-auto">			
 		  <a id="HREF" class="btn btn-outline-primary" href=""></a>	
+		  <a id="LOCK" class="btn btn-outline-danger" style="display:none;" href="">Тестирование завершено! Редактирование недоступно.</a>	
 		</div>
 	  </div>
 	</div>		
@@ -64,7 +65,7 @@
 			  </div>
 			  <div class="col d-grid gap-2 d-md-block">
 			    <button class="btn btn-primary" onClick="set_answ();">Сохранить</button>
-			    <button class="btn btn-outline-success" id="ANSW_TIME" disabled></button>
+			    <button class="btn btn-outline-success" id="ANSW_TIME" disabled>qwe</button>
 			  </div>
 			</form>
 		</div>
@@ -119,6 +120,9 @@
 						count = json['COUNT'];
 						update_nav_list();
 						
+						console.log("Проверяем блокировку теста и выводим информационное сообщение");
+						document.getElementById('LOCK').style = (json['LOCK'] == 1) ? "" : "display:none;";						
+						
 						console.log("Добавляем на страницу текст задания и ответ пользователя");
 						document.getElementById('TASK_TEXT').innerHTML = json['TASK_TEXT'];
 						document.getElementById('ANSW_TIME').innerHTML = (json['ANSW_TIME'] != null) ? json['ANSW_TIME'].slice(0, 19) : "";
@@ -150,6 +154,10 @@
 					  let json = await response.json();
 					  console.log(json);
 					  document.getElementById('ANSW_TIME').innerHTML = (json['ANSW_TIME'] != null) ? json['ANSW_TIME'].slice(0, 19) : "";
+					  if (task < count){
+						set_task(task+1);
+					  }
+					  get_test();
 					} else {
 					  alert("Ошибка HTTP: " + response.status);
 					}
@@ -180,6 +188,7 @@
 					document.getElementById('NAV_LIST').innerHTML = nav_list;
 				}
 			</script>
+			
 			
 			<script>				
 				function end(){
