@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Форма тестирования</title>
     <link href="./bootstrap.min.css" rel="stylesheet">
+	
+	<style type="text/css">
+	   #TASK_TEXT { 
+		background-image: url(bg_TASK_TEXT.png); /* Путь к фоновому рисунку */
+		background-position: left top; /* Положение фона */
+		background-repeat: repeat; /* Повторяем фон */
+	   }
+    </style>
+	
   </head>
   <body>
     <script src="./bootstrap.bundle.min.js"></script>
@@ -178,7 +187,38 @@
 				}
 			</script>			
 
-		  
+			<script>				
+  
+				document.oncontextmenu = function() {  
+					return false;  
+				};  
+				
+				document.onkeydown = function(e) {  
+					if (e.keyCode == 123) {  
+						return false;  
+					}  
+					if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) {  
+						return false;  
+					}  
+					if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) {  
+						return false;  
+					}  
+					if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) {  
+						return false;  
+					}  
+					if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) {  
+						return false;  
+					}  
+					if (e.ctrlKey && e.keyCode == 'С'.charCodeAt(0)) {  
+						return false;  
+					} 
+					if (e.ctrlKey && e.keyCode == 'C'.charCodeAt(0)) {  
+						return false;  
+					} 
+
+					
+				}  
+			</script>		  
 		
 	
   </body>
