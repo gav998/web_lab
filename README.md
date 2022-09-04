@@ -70,7 +70,7 @@ For update manually you may run `update_web_lab.py`
 2. **If you have a GRAY, DYNAMIC IP** add line: 
 ```bash
 @reboot sleep 20 && export DISPLAY=:0 && cd /home/pi/web_lab/ && sudo -u pi lxterminal -e python3 run_ngrok.py 
-@reboot sleep 20 && export DISPLAY=:0&& cd /home/pi/web_lab/server/ && sudo -u pi lxterminal -e python3 server.py
+@reboot sleep 20 && export DISPLAY=:0 && cd /home/pi/web_lab/server/ && sudo -u pi lxterminal -e python3 server.py
 ```
 Or run manually `run_ngrok.py` and `server.py` 
 
