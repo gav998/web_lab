@@ -29,7 +29,7 @@ crontab -e
 ```
 add line in script (user - pi) (terminal - lxterminal)
 ```bash
-@reboot sleep 20 && export DISPLAY=:0 && cd /home/pi/web_lab/ && sudo -u pi lxterminal -e python3 run.py
+@reboot sleep 20 && export DISPLAY=:0 && cd /home/pi/web_lab/ && sudo -u pi lxterminal -e python3 update_v1.py && sudo -u pi lxterminal -e python3 run.py
 ```
 
 ## If you have a static IP (or local start)
