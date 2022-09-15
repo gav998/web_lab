@@ -63,15 +63,6 @@ def update_conf(tunnels):
         os.system("python ./upload_conf_ftp.py")
     else:
         os.system("lxterminal -e python3 ./upload_conf_ftp.py")
-    
-
-with open('./config_ftp.txt') as config_ftp:
-    ftp=config_ftp.readline().rstrip()
-    user=config_ftp.readline().rstrip()
-    password=config_ftp.readline().rstrip()
-    print(f'{ftp} {user} {password}')
-    time.sleep(1)
-
 
 
 proc = start_tunnels()
