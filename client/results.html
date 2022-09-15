@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Страница для проверки работ</title>
+    <link href="./bootstrap.min.css" rel="stylesheet">
+	
+	<style type="text/css">
+		table {
+		  width: 100%;
+		}
+
+		tr{
+		  width: 0;
+		  white-space: nowrap;
+		}
+
+    </style>
+	
+	
+  </head>
+  <body>
+    <script src="./bootstrap.bundle.min.js"></script>
+	<script src="./conf.js"></script>
+	<script src="./filterTable.v1.0.min.js"></script>
+	
+	<div class="container">
+	  <div class="row border-bottom border-primary py-3">
+		<div class="col d-grid gap-2 mx-auto">			
+		  <a id="HREF" class="btn btn-outline-primary" href=""></a>	
+		  <a id="HOME" class="btn btn-outline-success" href="./">Перейти к списку тестов</a>
+		  <button class="btn btn-outline-danger" onclick="set_max_len(1023);get_full();">Показать больше текста</button>
+		</div>
+	  </div>
+	</div>		
+	
+	
+	<div class="container">
+	  <div class="row py-3">
+		<div class="col">
+		
+			<table class="table">
+			  <thead>
+				<tr>
+				  <th scope="col">UUID</th>
+				  <th scope="col">TEST</th>
+				  <th scope="col">NAME</th>
+				  <th scope="col">NUM</th>
+				  <th scope="col">LETTER</th>
+				  <th scope="col">TIME_START</th>
+				  <th scope="col">LOCK</th>
+				  <th scope="col">SCORE</th>
+				  <th scope="col">COUNT</th>
+				</tr>
+				<tr>
+				  <td><input id="REGEXP0" /></td>
+				  <td><input id="REGEXP1" /></td>
+				  <td><input id="REGEXP2" /></td>
+				  <td><input id="REGEXP3" /></td>
+				  <td><input id="REGEXP4" /></td>
+				  <td><input id="REGEXP5" /></td>
+				  <td><input id="REGEXP6" /></td>
+				</tr>
+			  </thead>
+			  <tbody id="DATA" class="font-monospace">
+			  		  
+				<td colspan="3">
+					<div class="text-center">
+					  <span class="spinner-border m-5" role="status">
+						<span class="visually-hidden">Loading...</span>
+					  </span>
+					</div>
+				</td>
+			  
+			  </tbody>
+			</table>	
+		
+		</div>
+	  </div>
+	</div>
+
+
+			<script>
+				console.log("Начало работы");
+				
+				function read_get_values() {
+					console.log("Чтение GET параметров");
+					var p_url=location.search.substring(1);
+					var parametr=p_url.split("&");				
+					var values= new Array();
+					for(let i=0; i < parametr.length; i++){
+						j=parametr[i].split("="); 
+						values[j[0]]=unescape(j[1]);
+					}
+					console.log(values);
+					return values
+				}
+				var values = read_get_values();
+				var KEY = values["KEY"];
+				var max_len = 40
+				function set_max_len(l) {
+					max_len = l;	
+				}
+
+			</script>
+			
+			<script>
+				console.log("Инициализация API функции получения тестов используя KEY");	
+
+				async function get_full() {
+					console.log("get_full()");
+					let url = new URL(server + "get_full/");
+					url.searchParams.set('KEY', KEY);				
+					let response = await fetch(url);
+					if (response.ok) { // если HTTP-статус в диапазоне 200-299
+						// получаем тело ответа
+						let json = await response.json();
+						console.log(json);
+						console.log("Добавляем на страницу инфо о тесте");
+						var msg = ""
+						for (let i = 0; i < json.length; i++){
+							msg = msg + "<tr>"
+							for (let j = 0; j < json[i].length; j++){
+								msg = msg + "<td>" + String(json[i][j]).slice(0, max_len) + "</td>"
+							}
+							msg = msg + "</tr>"
+						}
+						document.getElementById('HREF').innerHTML = location.href;	
+						document.getElementById('DATA').innerHTML = msg;
+					} else {
+					  alert("Ошибка HTTP: " + response.status);
+					}
+				}
+				
+				get_full();
+			</script>			
+
+
+			<script>
+				filterTable( document.getElementById("DATA"), {
+
+						0: new filterTable.Filter(document.getElementById("REGEXP0"),
+							/* Коллбэк ф-ция валидации */
+							function (value, filters, i) {
+								return value.indexOf(filters[i].value) === 0;
+							},
+							/* Будем вызывать валидацию по событию onkeyup фильтра */
+							"onkeyup"
+						),
+						1: new filterTable.Filter(document.getElementById("REGEXP1"),
+							/* Коллбэк ф-ция валидации */
+							function (value, filters, i) {
+								return value.indexOf(filters[i].value) === 0;
+							},
+							/* Будем вызывать валидацию по событию onkeyup фильтра */
+							"onkeyup"
+						),
+						2: new filterTable.Filter(document.getElementById("REGEXP2"),
+							/* Коллбэк ф-ция валидации */
+							function (value, filters, i) {
+								return value.indexOf(filters[i].value) === 0;
+							},
+							/* Будем вызывать валидацию по событию onkeyup фильтра */
+							"onkeyup"
+						),
+						3: new filterTable.Filter(document.getElementById("REGEXP3"),
+							/* Коллбэк ф-ция валидации */
+							function (value, filters, i) {
+								return value.indexOf(filters[i].value) === 0;
+							},
+							/* Будем вызывать валидацию по событию onkeyup фильтра */
+							"onkeyup"
+						),
+						4: new filterTable.Filter(document.getElementById("REGEXP4"),
+							/* Коллбэк ф-ция валидации */
+							function (value, filters, i) {
+								return value.indexOf(filters[i].value) === 0;
+							},
+							/* Будем вызывать валидацию по событию onkeyup фильтра */
+							"onkeyup"
+						),
+						5: new filterTable.Filter(document.getElementById("REGEXP5"),
+							/* Коллбэк ф-ция валидации */
+							function (value, filters, i) {
+								return value.indexOf(filters[i].value) === 0;
+							},
+							/* Будем вызывать валидацию по событию onkeyup фильтра */
+							"onkeyup"
+						),
+						6: new filterTable.Filter(document.getElementById("REGEXP6"),
+							/* Коллбэк ф-ция валидации */
+							function (value, filters, i) {
+								return value.indexOf(filters[i].value) === 0;
+							},
+							/* Будем вызывать валидацию по событию onkeyup фильтра */
+							"onkeyup"
+						)
+						
+						
+						
+						
+					}
+				);
+			</script>
+			
+
+  </body>
+</html>
+
+
+
+

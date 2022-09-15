@@ -44,6 +44,18 @@ class StringGenerator(object):
         print(UUID, task, answ)
         return utils.tbl_set_answ(UUID, task, answ)
 
+      
+    @cherrypy.expose
+    @cherrypy.tools.json_out()
+    def get_full(self, KEY=""):
+        with open('./KEY.txt') as key_f:
+            PASS=key_f.readline().rstrip()
+            print(f'{PASS} : {KEY}')      
+        if KEY == PASS:
+            return utils.tbl_get_full()
+        return "Error"
+
+
 
 if __name__ == '__main__':
     conf = {

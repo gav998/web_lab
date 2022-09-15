@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Форма тестирования</title>
+    <title>Таблица результатов</title>
     <link href="./bootstrap.min.css" rel="stylesheet">
   </head>
   <body>
@@ -15,7 +15,7 @@
 		<div class="col d-grid gap-2 mx-auto">			
 		  <a id="HREF" class="btn btn-outline-primary" href=""></a>	
 		  <a id="HOME" class="btn btn-outline-success" href="./">Перейти к списку тестов</a>
-		  <a id="TOTEST" class="btn btn-outline-success" href="./">Вернуться к заданиям</a>		  
+		  <a id="TOTEST" class="btn btn-outline-success" href="">Вернуться к заданиям</a>		  
 		</div>
 	  </div>
 	</div>		
@@ -47,7 +47,15 @@
 				</tr>
 			  </thead>
 			  <tbody id="RES_TABLE">
-
+			  
+				<td colspan="3">
+					<div class="text-center">
+					  <span class="spinner-border m-5" role="status">
+						<span class="visually-hidden">Loading...</span>
+					  </span>
+					</div>
+				</td>
+			  
 			  </tbody>
 			</table>	
 		
@@ -91,7 +99,7 @@
 					  console.log("Добавляем на страницу инфо о тесте");
 						document.getElementById('HREF').innerHTML = location.href;	
 						document.getElementById('HREF').href = location.href;
-						
+						document.getElementById('TOTEST').href = './test.html?UUID=' + UUID
 						document.getElementById('TEST').innerHTML = json['TEST'];
 						document.getElementById('NAME').innerHTML = json['NAME'];
 						document.getElementById('NUM').innerHTML = json['NUM'];

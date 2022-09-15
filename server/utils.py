@@ -121,3 +121,13 @@ def generate_test(TEST):
         d = json.loads(result.stdout.decode('utf-8'))
 
     return d
+    
+    
+def tbl_get_full():
+    sql = f'''
+    SELECT * FROM tests;
+    '''
+    with sqlite3.connect(DB_PATH) as db:
+        data = db.execute(sql).fetchall()
+    
+    return data
