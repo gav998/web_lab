@@ -17,7 +17,7 @@ for (dirpath, dirnames, filenames) in os.walk('./client/'):
     for filename in filenames:
         n = dirpath+filename
         n = n.replace('\\', '/')
-        if (b[0] in n):
+        if any([True for i in range(len(b)) if b[i] in n]):
             continue
         f.append(n)
 

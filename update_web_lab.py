@@ -36,7 +36,7 @@ if "win" in platform:
     os.system(f'rd /s /q "../web_lab_temp/"')
 else:
     for file in f:
-        os.system(f'cp {file} {""+file[15:]}')
+        os.system(f'cp {file} {"."+file[15:]}')
     os.system(f'rm -rf "../web_lab_temp/"')
     
 
