@@ -53,7 +53,7 @@ class StringGenerator(object):
             print(f'get_db {PASS} : {KEY}')      
         if KEY == PASS:
             return utils.tbl_get_db()
-        return "Error"
+        return "Error: The KEY parameter is incorrect"
 
     @cherrypy.expose
     @cherrypy.tools.json_out()
@@ -63,7 +63,7 @@ class StringGenerator(object):
             print(f'get_headers {PASS} : {KEY}')      
         if KEY == PASS:
             return utils.tbl_get_headers()
-        return "Error"
+        return "Error: The KEY parameter is incorrect"
 
 
     @cherrypy.expose
@@ -74,7 +74,7 @@ class StringGenerator(object):
             print(f'get_results {PASS} : {KEY}')      
         if KEY == PASS:
             return utils.tbl_get_results(TIME_START, NUM, LETTER, TEST)
-        return "Error"
+        return "Error: The KEY parameter is incorrect"
 
 if __name__ == '__main__':
     conf = {

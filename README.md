@@ -13,7 +13,7 @@ An intermediary, ngrok, is used to determine the server address.
 
 The service is provided as is, for personal use.
 
-<img src="https://github.com/gav998/web_lab/blob/main/photo_2022-09-03_23-17-04.jpg" height="200"> <img src="https://github.com/gav998/web_lab/blob/main/photo_2022-09-03_23-17-06.jpg" height="200"> <img src="https://github.com/gav998/web_lab/blob/main/photo_2022-09-03_23-17-08.jpg" height="200">
+<img src="https://github.com/gav998/web_lab/blob/main/photo_2022-09-03_23-17-04.jpg" height="200"> <img src="https://github.com/gav998/web_lab/blob/main/photo_2022-09-03_23-17-06.jpg" height="200"> <img src="https://github.com/gav998/web_lab/blob/main/photo_2022-09-03_23-17-08.jpg" height="200"> <img src="https://github.com/gav998/web_lab/blob/main/2022-09-18_13-02-34.png" height="200"> <img src="https://github.com/gav998/web_lab/blob/main/2022-09-18_11-15-02.png" height="200"> 
 
 # Setup
 1. Copy Project
@@ -85,12 +85,16 @@ Or run manually `update_web_lab.py` and `upload_client_ftp.py`
 Edit and create file.py in folder ./server/tests/ from examples.
 There is a limit of 30 questions per test.
 
+# Checking the tests
+Visit the page your-server.com/result.html?KEY=your_key_in_the_file_./server/KEY.txt
+
 # Description of executable files
 `update_web_lab.py` - update project from github, excluding files:
 - ./update_web_lab.py
 - ./config_ftp.txt
 - ./client/conf.js
 - ./server/data.db
+- ./server/KEY.txt
 - ./server/tests/*
 
 `upload_client_ftp.py` - upload client to HTML host excluding ./client/conf.js 
