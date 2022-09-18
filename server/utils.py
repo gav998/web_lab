@@ -4,6 +4,7 @@ import os
 import subprocess
 import json
 from sys import platform
+from collections import Counter
 
 
 CURR_PATH = os.path.abspath(os.getcwd())
@@ -18,7 +19,7 @@ def tbl_new_uuid(UUID, TEST, NAME, NUM, LETTER):
       INTO tests(UUID, TEST, NAME, NUM, LETTER, TIME_START, {', '.join(list(test.keys()))}) 
     VALUES (?, ?, ?, ?, ?, ?, {', '.join(['?' for i in list(test.keys())])});    
     ''' 
-    values = [UUID, TEST, NAME, NUM, LETTER, datetime.datetime.today()]  
+    values = [UUID, TEST, NAME.upper(), NUM, LETTER, datetime.datetime.today()]  
     values.extend(test.values())
     values = tuple(values)
     with sqlite3.connect(DB_PATH) as db:
@@ -123,11 +124,63 @@ def generate_test(TEST):
     return d
     
     
-def tbl_get_full():
+def tbl_get_db():
     sql = f'''
-    SELECT * FROM tests;
+    SELECT * FROM tests
+    ORDER BY NAME, TIME_START DESC;
     '''
     with sqlite3.connect(DB_PATH) as db:
-        data = db.execute(sql).fetchall()
+        column = db.execute(sql)
+        column_names = [desc[0] for desc in column.description]
+        column = column.fetchall()
+        
+    data = [dict(zip(column_names, column[i])) for i in range(len(column))]
     
+    print(data[0])
+    
+    return data
+    
+def tbl_get_headers():
+    sql_0 = 'SELECT substring(TIME_START, 1, 10) FROM tests ORDER BY TIME_START DESC;'
+    sql_1 = 'SELECT NUM FROM tests ORDER BY NUM;'
+    sql_2 = 'SELECT ("NUM" || "--" || "LETTER") FROM tests ORDER BY NUM, LETTER;'
+    sql_3 = 'SELECT ("NUM" || "--" || "LETTER" || "--" || "TEST") FROM tests ORDER BY NUM, LETTER, TEST;'
+    sql_4 = 'SELECT TEST FROM tests ORDER BY TEST;'
+    sql_5 = 'SELECT (substring(TIME_START, 1, 10) || "--" || "NUM" || "--" || "LETTER" || "--" || "TEST") FROM tests ORDER BY TIME_START DESC, NUM, LETTER, TEST;'
+    with sqlite3.connect(DB_PATH) as db: 
+        db.row_factory = lambda cursor, row: row[0]
+        d0 = dict(Counter(db.execute(sql_0).fetchall()))
+        d1 = dict(Counter(db.execute(sql_1).fetchall()))
+        d2 = dict(Counter(db.execute(sql_2).fetchall()))
+        d3 = dict(Counter(db.execute(sql_3).fetchall()))
+        d4 = dict(Counter(db.execute(sql_4).fetchall()))
+        d5 = dict(Counter(db.execute(sql_5).fetchall()))
+    return {
+        0:d0,
+        1:d1,
+        2:d2,
+        3:d3,
+        4:d4,
+        5:d5,
+    }
+
+def tbl_get_results(TIME_START, NUM, LETTER, TEST):
+    sql = f'''
+    SELECT *
+      FROM tests
+     WHERE TIME_START LIKE (?) || "%" AND 
+           NUM LIKE (?) AND 
+           LETTER LIKE (?) AND 
+           TEST LIKE (?) 
+     ORDER BY NUM,
+              LETTER,
+              NAME,
+              TEST,
+              TIME_START DESC;
+    '''
+    with sqlite3.connect(DB_PATH) as db:
+        column = db.execute(sql, (TIME_START, NUM, LETTER, TEST,))
+        column_names = [desc[0] for desc in column.description]
+        column = column.fetchall()  
+    data = [dict(zip(column_names, column[i])) for i in range(len(column))]
     return data

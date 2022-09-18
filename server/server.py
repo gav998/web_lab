@@ -47,15 +47,34 @@ class StringGenerator(object):
       
     @cherrypy.expose
     @cherrypy.tools.json_out()
-    def get_full(self, KEY=""):
+    def get_db(self, KEY=""):
         with open('./KEY.txt') as key_f:
             PASS=key_f.readline().rstrip()
-            print(f'{PASS} : {KEY}')      
+            print(f'get_db {PASS} : {KEY}')      
         if KEY == PASS:
-            return utils.tbl_get_full()
+            return utils.tbl_get_db()
+        return "Error"
+
+    @cherrypy.expose
+    @cherrypy.tools.json_out()
+    def get_headers(self, KEY=""):
+        with open('./KEY.txt') as key_f:
+            PASS=key_f.readline().rstrip()
+            print(f'get_headers {PASS} : {KEY}')      
+        if KEY == PASS:
+            return utils.tbl_get_headers()
         return "Error"
 
 
+    @cherrypy.expose
+    @cherrypy.tools.json_out()
+    def get_results(self, KEY="", TIME_START="", NUM="", LETTER="", TEST=""):
+        with open('./KEY.txt') as key_f:
+            PASS=key_f.readline().rstrip()
+            print(f'get_results {PASS} : {KEY}')      
+        if KEY == PASS:
+            return utils.tbl_get_results(TIME_START, NUM, LETTER, TEST)
+        return "Error"
 
 if __name__ == '__main__':
     conf = {

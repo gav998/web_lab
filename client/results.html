@@ -13,7 +13,7 @@
 
 		tr{
 		  width: 0;
-		  white-space: nowrap;
+		  white-space: nowrap;	
 		}
 
     </style>
@@ -27,42 +27,16 @@
 	
 	<div class="container">
 	  <div class="row border-bottom border-primary py-3">
-		<div class="col d-grid gap-2 mx-auto">			
-		  <a id="HREF" class="btn btn-outline-primary" href=""></a>	
+		<div class="col d-grid gap-2 mx-auto">
 		  <a id="HOME" class="btn btn-outline-success" href="./">Перейти к списку тестов</a>
-		  <button class="btn btn-outline-danger" onclick="set_max_len(1023);get_full();">Показать больше текста</button>
 		</div>
 	  </div>
-	</div>		
-	
+	</div>	
 	
 	<div class="container">
 	  <div class="row py-3">
 		<div class="col">
-		
-			<table class="table">
-			  <thead>
-				<tr>
-				  <th scope="col">UUID</th>
-				  <th scope="col">TEST</th>
-				  <th scope="col">NAME</th>
-				  <th scope="col">NUM</th>
-				  <th scope="col">LETTER</th>
-				  <th scope="col">TIME_START</th>
-				  <th scope="col">LOCK</th>
-				  <th scope="col">SCORE</th>
-				  <th scope="col">COUNT</th>
-				</tr>
-				<tr>
-				  <td><input id="REGEXP0" /></td>
-				  <td><input id="REGEXP1" /></td>
-				  <td><input id="REGEXP2" /></td>
-				  <td><input id="REGEXP3" /></td>
-				  <td><input id="REGEXP4" /></td>
-				  <td><input id="REGEXP5" /></td>
-				  <td><input id="REGEXP6" /></td>
-				</tr>
-			  </thead>
+			<table class="table table-bordered">
 			  <tbody id="DATA" class="font-monospace">
 			  		  
 				<td colspan="3">
@@ -75,12 +49,70 @@
 			  
 			  </tbody>
 			</table>	
-		
 		</div>
 	  </div>
 	</div>
 
-
+	<div class=".container-fluid text-left">
+	  <div class="row">
+		<div class="col-md-auto" id="C0">
+		  		<td colspan="3">
+					<div class="text-center">
+					  <span class="spinner-border m-5" role="status">
+						<span class="visually-hidden">Loading...</span>
+					  </span>
+					</div>
+				</td>
+		</div>
+		<div class="col-md-auto" id="C1">
+		  		<td colspan="3">
+					<div class="text-center">
+					  <span class="spinner-border m-5" role="status">
+						<span class="visually-hidden">Loading...</span>
+					  </span>
+					</div>
+				</td>
+		</div>
+		<div class="col-md-auto" id="C2">
+		  		<td colspan="3">
+					<div class="text-center">
+					  <span class="spinner-border m-5" role="status">
+						<span class="visually-hidden">Loading...</span>
+					  </span>
+					</div>
+				</td>
+		</div>
+		<div class="col-md-auto" id="C3">
+		  		<td colspan="3">
+					<div class="text-center">
+					  <span class="spinner-border m-5" role="status">
+						<span class="visually-hidden">Loading...</span>
+					  </span>
+					</div>
+				</td>
+		</div>
+		<div class="col-md-auto" id="C4">
+		  		<td colspan="3">
+					<div class="text-center">
+					  <span class="spinner-border m-5" role="status">
+						<span class="visually-hidden">Loading...</span>
+					  </span>
+					</div>
+				</td>
+		</div>
+		<div class="col-md-auto" id="C5">
+		  		<td colspan="3">
+					<div class="text-center">
+					  <span class="spinner-border m-5" role="status">
+						<span class="visually-hidden">Loading...</span>
+					  </span>
+					</div>
+				</td>
+		</div>
+		
+	  </div>
+	</div>	
+	
 			<script>
 				console.log("Начало работы");
 				
@@ -98,112 +130,122 @@
 				}
 				var values = read_get_values();
 				var KEY = values["KEY"];
-				var max_len = 40
-				function set_max_len(l) {
-					max_len = l;	
-				}
-
+				max_len = 20;
 			</script>
-			
-			<script>
-				console.log("Инициализация API функции получения тестов используя KEY");	
 
-				async function get_full() {
-					console.log("get_full()");
-					let url = new URL(server + "get_full/");
+
+			<script>
+				console.log("Инициализация API функции получения количества ответов пользователей используя KEY");	
+
+				async function get_headers() {
+					console.log("get_headers()");
+					let url = new URL(server + "get_headers/");
 					url.searchParams.set('KEY', KEY);				
 					let response = await fetch(url);
 					if (response.ok) { // если HTTP-статус в диапазоне 200-299
 						// получаем тело ответа
 						let json = await response.json();
 						console.log(json);
-						console.log("Добавляем на страницу инфо о тесте");
+						console.log("get_headers() Добавляем на страницу инфо о тестах");
+						// перебор 6 столбцов (формат фильтра: количество)
+						for (let i = 0; i < 6; i++){
+							var msg = ""
+							//вывод столбца (формат фильтра: количество)
+							for (const [key, value] of Object.entries(json[i])) {
+								let keys = key.split('--')
+								let f = ''
+								if (i == 0)
+									f = "get_results('"+keys[0]+"', '%', '%', '%')"
+								if (i == 1)
+									f = "get_results('%', '"+keys[0]+"', '%', '%')"
+								if (i == 2)
+									f = "get_results('%', '"+keys[0]+"', '"+keys[1]+"', '%')"
+								if (i == 3)
+									f = "get_results('%', '"+keys[0]+"', '"+keys[1]+"', '"+keys[2]+"')"
+								if (i == 4)
+									f = "get_results('%', '%', '%', '"+keys[0]+"')"
+								if (i == 5)
+									f = "get_results('"+keys[0]+"', '"+keys[1]+"', '"+keys[2]+"', '"+keys[3]+"')"
+									
+								msg = msg+ '<button class="btn" onclick="'+f+'">'+key+': '+value+'</button><br>'
+							}
+							document.getElementById('C'+i).innerHTML = msg;
+						}
+						
+					} else {
+					  alert("Ошибка HTTP: " + response.status);
+					}
+				}
+				
+				get_headers();
+			</script>				
+
+			<script>
+			
+				console.log("Инициализация API функции получения результатов используя KEY");	
+
+				async function get_results(TIME_START, NUM, LETTER, TEST) {
+					console.log("get_results('"+TIME_START+"', '"+NUM+"', '"+LETTER+"', '"+TEST+"')");
+					
+					let url = new URL(server + "get_results/");
+					url.searchParams.set('KEY', KEY);
+					url.searchParams.set('TIME_START', TIME_START);
+					url.searchParams.set('NUM', NUM);
+					url.searchParams.set('LETTER', LETTER);
+					url.searchParams.set('TEST', TEST);
+					
+					let response = await fetch(url);
+					if (response.ok) { // если HTTP-статус в диапазоне 200-299
+						// получаем тело ответа
+						let json = await response.json();
+						console.log(json);
+						console.log("get_results() Добавляем на страницу инфо о тесте");
+						
 						var msg = ""
 						for (let i = 0; i < json.length; i++){
-							msg = msg + "<tr>"
-							for (let j = 0; j < json[i].length; j++){
-								msg = msg + "<td>" + String(json[i][j]).slice(0, max_len) + "</td>"
+							msg = msg + '<tr>';
+							msg = msg + '<th scope="row">' +'<a href="'+'./result.html?UUID=' + json[i]['UUID'] + '">i</a>' + "</th>"
+							msg = msg + "<td>" + json[i]['NUM'] + "</td>"
+							msg = msg + "<td>" + json[i]['LETTER'] + "</td>"
+							msg = msg + "<td>" + String(json[i]['NAME']).slice(0, max_len) + "</td>"
+							
+							let count_success = 0;
+							let answers = ''
+							for (let j = 1; j <= json[i]['COUNT']; j++){
+								if (json[i]['T_'+j+'_ANSW'] == json[i]['T_'+j+'_ANSW_CORRECT']){
+									count_success = count_success + 1;
+									answers = answers + '<td class="table-success">'
+								} else {
+									answers = answers + '<td class="table-danger">'
+								}
+								answers = answers + json[i]['T_'+j+'_ANSW'] + ';' + json[i]['T_'+j+'_ANSW_CORRECT'] + ';' + '</td>'
 							}
-							msg = msg + "</tr>"
+							let score = count_success/json[i]['COUNT']*100;
+							let score_style = ''
+							if (score > 80)
+								score_style = 'table-success'
+							else if (score > 60)
+								score_style = 'table-info'
+							else if (score > 30)
+								score_style = 'table-warning'
+							else
+								score_style = 'table-danger'
+							
+							
+							msg = msg + '<td class="'+score_style+'">' + String(score).slice(0, 3)+"%" + "</td>";
+							msg = msg + "<td>" + String(json[i]['TEST']).slice(0, max_len) + "</td>"
+							msg = msg + "<td>" + String(json[i]['TIME_START']).slice(0, 19) + "</td>"
+							msg = msg + answers;
+
+							msg = msg + '</tr>';
 						}
-						document.getElementById('HREF').innerHTML = location.href;	
 						document.getElementById('DATA').innerHTML = msg;
 					} else {
 					  alert("Ошибка HTTP: " + response.status);
 					}
 				}
 				
-				get_full();
-			</script>			
-
-
-			<script>
-				filterTable( document.getElementById("DATA"), {
-
-						0: new filterTable.Filter(document.getElementById("REGEXP0"),
-							/* Коллбэк ф-ция валидации */
-							function (value, filters, i) {
-								return value.indexOf(filters[i].value) === 0;
-							},
-							/* Будем вызывать валидацию по событию onkeyup фильтра */
-							"onkeyup"
-						),
-						1: new filterTable.Filter(document.getElementById("REGEXP1"),
-							/* Коллбэк ф-ция валидации */
-							function (value, filters, i) {
-								return value.indexOf(filters[i].value) === 0;
-							},
-							/* Будем вызывать валидацию по событию onkeyup фильтра */
-							"onkeyup"
-						),
-						2: new filterTable.Filter(document.getElementById("REGEXP2"),
-							/* Коллбэк ф-ция валидации */
-							function (value, filters, i) {
-								return value.indexOf(filters[i].value) === 0;
-							},
-							/* Будем вызывать валидацию по событию onkeyup фильтра */
-							"onkeyup"
-						),
-						3: new filterTable.Filter(document.getElementById("REGEXP3"),
-							/* Коллбэк ф-ция валидации */
-							function (value, filters, i) {
-								return value.indexOf(filters[i].value) === 0;
-							},
-							/* Будем вызывать валидацию по событию onkeyup фильтра */
-							"onkeyup"
-						),
-						4: new filterTable.Filter(document.getElementById("REGEXP4"),
-							/* Коллбэк ф-ция валидации */
-							function (value, filters, i) {
-								return value.indexOf(filters[i].value) === 0;
-							},
-							/* Будем вызывать валидацию по событию onkeyup фильтра */
-							"onkeyup"
-						),
-						5: new filterTable.Filter(document.getElementById("REGEXP5"),
-							/* Коллбэк ф-ция валидации */
-							function (value, filters, i) {
-								return value.indexOf(filters[i].value) === 0;
-							},
-							/* Будем вызывать валидацию по событию onkeyup фильтра */
-							"onkeyup"
-						),
-						6: new filterTable.Filter(document.getElementById("REGEXP6"),
-							/* Коллбэк ф-ция валидации */
-							function (value, filters, i) {
-								return value.indexOf(filters[i].value) === 0;
-							},
-							/* Будем вызывать валидацию по событию onkeyup фильтра */
-							"onkeyup"
-						)
-						
-						
-						
-						
-					}
-				);
-			</script>
-			
+			</script>	
 
   </body>
 </html>
