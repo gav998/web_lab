@@ -86,7 +86,7 @@ Edit and create file.py in folder ./server/tests/ from examples.
 There is a limit of 30 questions per test.
 
 # Checking the tests
-Visit the page your-server.com/result.html?KEY=your_key_in_the_file_./server/KEY.txt
+Visit the page your-server.com/results.html?KEY=your_key_in_the_file_./server/KEY.txt
 
 # Description of executable files
 `update_web_lab.py` - update project from github, excluding files:
