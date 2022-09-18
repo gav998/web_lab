@@ -119,9 +119,10 @@
 							msg = msg + '<th scope="row">'+i+'</th>';
 							msg = msg + '<td >'+json['T_'+i+'_ANSW']+'</td>';
 							msg = msg + '<td >'+json['T_'+i+'_ANSW_CORRECT']+'</td>';
+							msg = msg + '</tr>';
 						}
 						document.getElementById('RES_TABLE').innerHTML = msg;
-						document.getElementById('PROCENT').innerHTML = String(count_success/count*100).slice(0, 2)+"%";
+						document.getElementById('PROCENT').innerHTML = String(count_success/count*100).slice(0, 3)+"%";
 					} else {
 					  alert("Ошибка HTTP: " + response.status);
 					}
