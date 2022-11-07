@@ -4,8 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Форма тестирования</title>
+	<link rel="icon" href="data:,">
     <link href="./bootstrap.min.css" rel="stylesheet">
-	
+
 	<style type="text/css">
 	   #TASK_TEXT { 
 		background-image: url(bg_TASK_TEXT.png); /* Путь к фоновому рисунку */
@@ -25,6 +26,7 @@
     <script src="./bootstrap.bundle.min.js"></script>
 	<script src="./conf.js"></script>
 	
+	
 	<div class="container">
 	  <div class="row border-bottom border-primary py-3">
 		<div class="col d-grid gap-2 mx-auto">			
@@ -33,6 +35,19 @@
 		</div>
 	  </div>
 	</div>		
+	
+	
+	<div class="container">
+	  <div class="row border-bottom border-primary py-3">
+		<div class="col d-grid gap-2 d-md-block">
+		  <button class="btn border-0" id="TEST"></button>
+		  <button class="btn border-0" id="NAME"></button>
+		  <button class="btn border-0" id="NUM"></button>
+		  <button class="btn border-0" id="LETTER"></button>
+		  <button class="btn border-0" id="TIME_START"></button>	  
+		</div>
+	  </div>
+	</div>	
 	
 	<div class="container">
 	  <div class="row border-bottom border-primary py-3">
@@ -71,7 +86,7 @@
 			  </div>
 			  <div class="col d-grid gap-2 d-md-block">
 			    <button class="btn btn-primary" onClick="set_answ();">Сохранить</button>
-			    <button class="btn btn-outline-success" id="ANSW_TIME" disabled>qwe</button>
+			    <button class="btn btn-outline-success" id="ANSW_TIME" disabled></button>
 			  </div>
 			</form>
 		</div>
@@ -126,11 +141,22 @@
 						count = json['COUNT'];
 						update_nav_list();
 						
+						console.log("Добавляем инфо о пользователе");
+
+						document.getElementById('TEST').innerHTML = json['TEST'];
+						document.getElementById('NAME').innerHTML = json['NAME'];
+						document.getElementById('NUM').innerHTML = json['NUM'];
+						document.getElementById('LETTER').innerHTML = json['LETTER'];
+						document.getElementById('TIME_START').innerHTML = (json['TIME_START'] != null) ? json['TIME_START'].slice(0, 19) : "";
+						
 						console.log("Проверяем блокировку теста и выводим информационное сообщение");
 						document.getElementById('LOCK').style = (json['LOCK'] == 1) ? "" : "display:none;";						
 						
 						console.log("Добавляем на страницу текст задания и ответ пользователя");
-						document.getElementById('TASK_TEXT').innerHTML = json['TASK_TEXT'];
+						// исполняемый js script
+						setInnerHtml(document.querySelector('#TASK_TEXT'), json['TASK_TEXT']);
+						// было
+						// document.getElementById('TASK_TEXT').innerHTML = json['TASK_TEXT'];
 						document.getElementById('ANSW_TIME').innerHTML = (json['ANSW_TIME'] != null) ? json['ANSW_TIME'].slice(0, 19) : "";
 						document.getElementById('ANSW').value = json['ANSW'];
 					} else {
@@ -200,7 +226,8 @@
 				function end(){
 					document.location.href = './result.html?UUID='+UUID;
 				}
-			</script>			
+			</script>	
+
 
 			<script>				
   
@@ -233,8 +260,45 @@
 
 					
 				}  
-			</script>		  
-		
-	
+			</script>
+			
+			<script>
+				function setInnerHtml(elm, html) {
+					console.log("setInnerHtml");
+					// вставляем простой html (неисполняемый)
+					elm.innerHTML = html;
+					console.log(html);
+					// найдем все теги script в этом html
+					let scripts = elm.getElementsByTagName("script");
+					// клонируем хз зачем, но так на форуме
+					let scriptsClone = [];
+					for (let i = 0; i < scripts.length; i++) {
+						scriptsClone.push(scripts[i]);
+					}
+					// обработаем каждый скрипт
+					for (let i = 0; i < scriptsClone.length; i++) {
+						// создадим новый скрипт 
+						let sc = document.createElement("script");
+						let currentScript = scriptsClone[i];
+						// если есть src, то копируем
+						if (currentScript.hasAttribute("src")) {
+							sc.setAttribute("src", currentScript.getAttribute("src"));
+						} else { // иначе создаем src из содержимого
+							// создадим Blob из строки
+							let myBlob = new Blob([currentScript.innerHTML], {type: 'text/javascript'});
+							// ссылка на javascript
+							let objectURL = URL.createObjectURL(myBlob); 
+							sc.setAttribute("src", objectURL);
+						}
+						// по умолчанию он асинхронный
+						sc.async = false;
+						// добавляем на страницу скрипт
+						document.head.appendChild(sc);
+						console.log("Добавлен скрипт");
+						console.log(sc);
+				  }
+				}
+			</script>
+
   </body>
 </html>

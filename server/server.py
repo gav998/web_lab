@@ -14,6 +14,7 @@ class StringGenerator(object):
     @cherrypy.tools.json_out()
     def test_list(self):
         tests = os.listdir(path='./tests')
+        tests.sort()
         tests = {i : tests[i] for i in range(len(tests))}
         return tests
                 

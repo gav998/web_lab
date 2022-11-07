@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Список тестов</title>
+	<link rel="icon" href="data:,">
     <link href="./bootstrap.min.css" rel="stylesheet">
   </head>
   <body>
@@ -84,6 +85,7 @@
 					  return json;
 					} else {
 					  alert("Ошибка HTTP: " + response.status);
+					  
 					}
 				}
 
@@ -97,6 +99,7 @@
 							msg = msg + '<button type="submit" class="btn btn-outline-primary text-start" onClick="send_choice_and_get_uuid('+ "'" + response[key] + "'" + ');">'+response[key]+'</button>'
 						}
 						document.getElementById('TEST_LIST').innerHTML = msg;
+						
 					},
 					error => alert(`Rejected: ${error}`)
 				  );
@@ -125,7 +128,6 @@
 					url.searchParams.set('name', name);
 					url.searchParams.set('num', num);
 					url.searchParams.set('letter', letter);
-					
 					let response = await fetch(url);
 
 					if (response.ok) { // если HTTP-статус в диапазоне 200-299
