@@ -88,6 +88,9 @@ There is a limit of 30 questions per test.
 # Checking the tests
 Visit the page your-server.com/results.html?KEY=your_key_in_the_file_./server/KEY.txt
 
+# Generate 40 test variants and upload .docx for printing
+Visit the page your-server.com/docx.html?KEY=your_key_in_the_file_./server/KEY.txt
+
 # Description of executable files
 `update_web_lab.py` - update project from github, excluding files:
 - ./update_web_lab.py

@@ -6,6 +6,12 @@ import json
 from sys import platform
 from collections import Counter
 
+from docx import Document
+from htmldocx import HtmlToDocx
+from docx.shared import Mm
+
+from io import BytesIO 
+
 
 CURR_PATH = os.path.abspath(os.getcwd())
 DB_PATH = CURR_PATH + "/data.db"
@@ -184,3 +190,35 @@ def tbl_get_results(TIME_START, NUM, LETTER, TEST):
         column = column.fetchall()  
     data = [dict(zip(column_names, column[i])) for i in range(len(column))]
     return data
+    
+    
+def get_40_tests(TEST):
+    # Преднастройка документа и парсера html
+    document = Document()
+    new_parser = HtmlToDocx()
+    section = document.sections[0]
+    section.left_margin = Mm(12.7)
+    section.right_margin = Mm(12.7)
+    section.top_margin = Mm(12.7)
+    section.bottom_margin = Mm(12.7)
+    # генерация 40 вариантов
+    sres = ''
+    s = ''
+    var = 1  
+    while var <= 40:
+        document.add_paragraph(f'Вариант {var}\n')
+        sres += f"\nОтветы. Вариант {var}\n"
+        test1 = generate_test(TEST)
+        for i in range(1, 1+test1['COUNT']):
+            html = f'{i}. '+test1[f'T_{i}_TEXT']
+            new_parser.add_html_to_document(html, document)
+            sres += f' {i}.'+test1[f'T_{i}_ANSW_CORRECT']
+        document.add_page_break()
+        var += 1
+    document.add_paragraph(sres)
+    
+    # сохраняем в поток
+    target_stream = BytesIO()
+    document.save(target_stream)
+    print('готово')
+    return target_stream.getvalue()

@@ -2,6 +2,7 @@ import os
 import cherrypy
 import uuid
 import utils
+from cherrypy.lib import static
 
 
 class StringGenerator(object):    
@@ -75,6 +76,16 @@ class StringGenerator(object):
             print(f'get_results {PASS} : {KEY}')      
         if KEY == PASS:
             return utils.tbl_get_results(TIME_START, NUM, LETTER, TEST)
+        return "Error: The KEY parameter is incorrect"
+
+
+    @cherrypy.expose
+    def get_40_tests(self, KEY="", TEST=""):
+        with open('./KEY.txt') as key_f:
+            PASS=key_f.readline().rstrip()
+            print(f'get_40_tests {PASS} : {KEY}')      
+        if KEY == PASS:
+            return static.serve_fileobj(utils.get_40_tests(TEST), 'application/x-download', 'attachment', 'test.docx')
         return "Error: The KEY parameter is incorrect"
 
 if __name__ == '__main__':

@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Список тестов</title>
+	<link rel="icon" href="data:,">
+    <link href="./bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+    <script src="./bootstrap.bundle.min.js"></script>
+	<script src="./conf.js"></script>
+	
+	
+	
+	
+	<div class="container">
+	  <div class="row">
+
+		<div class="col">
+		
+			<form class="row g-3" onsubmit="return false;" name="my">			  
+			  <div class="col-12 btn-group-vertical" role="group" id='TEST_LIST'>
+						
+				
+				<div class="text-center">
+				  <div class="spinner-border m-5" role="status">
+					<span class="visually-hidden">Loading...</span>
+				  </div>
+				</div>
+				
+			  </div>
+			</form>
+		
+		</div>
+
+	  </div>
+	</div>
+	
+	
+			<script>
+				console.log("Начало работы");
+				
+				function read_get_values() {
+					console.log("Чтение GET параметров");
+					var p_url=location.search.substring(1);
+					var parametr=p_url.split("&");				
+					var values= new Array();
+					for(let i=0; i < parametr.length; i++){
+						j=parametr[i].split("="); 
+						values[j[0]]=unescape(j[1]);
+					}
+					console.log(values);
+					return values
+				}
+				var values = read_get_values();
+				var KEY = values["KEY"];
+			</script>
+
+			<script>
+			
+				console.log("Инициализация API функции получения списка тестов get_test_list() по адр test_list");
+		
+				async function get_test_list() {
+					console.log("get_test_list");
+					
+					let url = server + "test_list/"
+					
+					let response = await fetch(url);
+
+					if (response.ok) { // если HTTP-статус в диапазоне 200-299
+					  // получаем тело ответа
+					  let json = await response.json();
+					  console.log(json);
+					  return json;
+					} else {
+					  alert("Ошибка HTTP: " + response.status);
+					  
+					}
+				}
+
+
+				console.log("Запрос списка тестов у сервера");			
+				get_test_list().then(
+					response => {
+						console.log("Получен список тестов у сервера");	
+						let msg = ""
+						for (let key in response){
+							msg = msg + '<button type="submit" class="btn btn-outline-primary text-start" onClick="send_choice_and_get_40_tests('+ "'" + response[key] + "'" + ');">'+response[key]+'</button>'
+						}
+						document.getElementById('TEST_LIST').innerHTML = msg;
+						
+					},
+					error => alert(`Rejected: ${error}`)
+				  );
+			</script>
+			
+			<script>
+			function downloadBlob(blob, name = 'file.docx') {
+			  // Convert your blob into a Blob URL (a special url that points to an object in the browser's memory)
+			  const blobUrl = URL.createObjectURL(blob);
+
+			  // Create a link element
+			  const link = document.createElement("a");
+
+			  // Set link's href to point to the Blob URL
+			  link.href = blobUrl;
+			  link.download = name;
+
+			  // Append link to the body
+			  document.body.appendChild(link);
+
+			  // Dispatch click event on the link
+			  // This is necessary as link.click() does not work on the latest firefox
+			  link.dispatchEvent(
+				new MouseEvent('click', { 
+				  bubbles: true, 
+				  cancelable: true, 
+				  view: window 
+				})
+			  );
+
+			  // Remove link from body
+			  document.body.removeChild(link);
+			}			
+			</script>
+			
+			
+			<script>
+			
+
+			
+				console.log("Инициализация API функции получения вариантов теста send_choice_and_get_40_tests(test) и скачивание документа");
+				async function send_choice_and_get_40_tests(TEST) {
+					console.log("send_choice_and_get_40_tests");
+					
+					let url = new URL(server + "get_40_tests/");
+					url.searchParams.set('KEY', KEY);
+					url.searchParams.set('TEST', TEST);
+					
+					let response = await fetch(url);
+
+					if (response.ok) { // если HTTP-статус в диапазоне 200-299
+					  // получаем тело ответа
+					  let blob = await response.blob();
+					  blob.name = TEST + '.docx'
+					  downloadBlob(blob, blob.name)
+					  //document.location.href = './test.html?UUID='+json['UUID'];
+					  return blob;
+					} else {
+					  alert("Ошибка HTTP: " + response.status);
+					}
+				}
+			</script>
+			
+	
+  </body>
+</html>
