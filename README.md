@@ -21,9 +21,11 @@ The service is provided as is, for personal use.
 git clone https://github.com/gav998/web_lab.git
 ```
 
-2. Install `cherrypy`
+2. Install requirements
 ```bash
 pip3 install cherrypy
+pip3 install python-docx
+pip3 install htmldocx
 ```
 
 **If you are using a testing system on a local network** (even without the Internet) (students' computers are clients; teachers' computer is a server), you need to follow step 3.
