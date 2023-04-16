@@ -31,7 +31,7 @@
 	  <div class="row border-bottom border-primary py-3">
 		<div class="col d-grid gap-2 mx-auto">			
 		  <a id="HREF" class="btn btn-outline-primary" href=""></a>	
-		  <a id="LOCK" class="btn btn-outline-danger" style="display:none;" href="">Тестирование завершено! Редактирование недоступно.</a>	
+		  <a id="LOCK" class="btn btn-outline-danger" style="display:none;" href="/">Тестирование завершено! Редактирование недоступно.</a>	
 		</div>
 	  </div>
 	</div>		
@@ -157,6 +157,9 @@
 						setInnerHtml(document.querySelector('#TASK_TEXT'), json['TASK_TEXT']);
 						// было
 						// document.getElementById('TASK_TEXT').innerHTML = json['TASK_TEXT'];
+						//pic
+						document.getElementById('TASK_TEXT').innerHTML += (json['TASK_PIC'] != null) ? '<img src="data:image/png;base64, '+json['TASK_PIC']+'" alt="Red dot" />' : "";
+						
 						document.getElementById('ANSW_TIME').innerHTML = (json['ANSW_TIME'] != null) ? json['ANSW_TIME'].slice(0, 19) : "";
 						document.getElementById('ANSW').value = json['ANSW'];
 					} else {

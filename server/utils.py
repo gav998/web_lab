@@ -6,58 +6,103 @@ import json
 from sys import platform
 from collections import Counter
 
-from docx import Document
-from htmldocx import HtmlToDocx
-from docx.shared import Mm
+import base64
+from PIL import Image
+from io import BytesIO
 
-from io import BytesIO 
+def image_to_base64(image_path):
+    with Image.open(image_path) as img:
+        buffer = BytesIO()
+        img_format = img.format
+        img.save(buffer, format=img_format)
+        img_data = buffer.getvalue()
+    base64_str = base64.b64encode(img_data).decode('utf-8')
+    return base64_str
 
+# from docx import Document
+# from htmldocx import HtmlToDocx
+# from docx.shared import Mm
+
+# from io import BytesIO 
 
 CURR_PATH = os.path.abspath(os.getcwd())
 DB_PATH = CURR_PATH + "/data.db"
-#DB_PATH = CURR_PATH + "\data.db"
 
  
 def tbl_new_uuid(UUID, TEST, NAME, NUM, LETTER): 
-    test = generate_test(TEST) 
+    test = generate_test(TEST)
+    
+    keys = ', '.join([f'"{key}"' for key in test.keys()])
+    placeholders = ', '.join(['?' for _ in test.keys()])
+    
     sql = f'''
     INSERT 
-      INTO tests(UUID, TEST, NAME, NUM, LETTER, TIME_START, {', '.join(list(test.keys()))}) 
-    VALUES (?, ?, ?, ?, ?, ?, {', '.join(['?' for i in list(test.keys())])});    
-    ''' 
-    values = [UUID, TEST, NAME.upper(), NUM, LETTER, datetime.datetime.today()]  
+      INTO tests(UUID, TEST, NAME, NUM, LETTER, TIME_START, {keys}) 
+    VALUES (?, ?, ?, ?, ?, ?, {placeholders});    
+    '''
+    
+    values = [UUID, 
+              TEST.encode("ascii", errors="ignore").decode(), 
+              NAME.upper().encode("ascii", errors="ignore").decode(), 
+              NUM.encode("ascii", errors="ignore").decode(), 
+              LETTER.encode("ascii", errors="ignore").decode(), 
+              datetime.datetime.today()]  
     values.extend(test.values())
     values = tuple(values)
-    with sqlite3.connect(DB_PATH) as db:
-        db.execute(sql, values)
-    return {
-                "UUID": UUID,
-           }
+    
+    try:
+        with sqlite3.connect(DB_PATH) as db:
+            db.execute(sql, values)
+            db.commit()
+    except sqlite3.Error as e:
+        print(f"Error executing SQL query: {e}")
+        return {"UUID": f"Error executing SQL query: {e}"}
+    finally:
+        db.close()
+        
+    return {"UUID": UUID}
         
 def tbl_get_test(UUID, TASK):
     sql = '''
     SELECT * FROM tests WHERE UUID = (?);
-    '''   
-    with sqlite3.connect(DB_PATH) as db:
-        column = db.execute(sql, (UUID,))
-        column_names = [desc[0] for desc in column.description]
-        column = column.fetchone()
-        test = dict(zip(column_names, column))
-    return {
-                    "UUID": test["UUID"],
-                    "TEST": test["TEST"],
-                    "NAME": test["NAME"],
-                    "NUM": test["NUM"],
-                    "LETTER": test["LETTER"],
-                    "TIME_START": test["TIME_START"],
-                    "COUNT": test["COUNT"],
-                    "LOCK": test["LOCK"],
-                    
-                    "TASK_TEXT": test["T_"+TASK+"_TEXT"],
-                    "ANSW": test["T_"+TASK+"_ANSW"],
-                    "ANSW_TIME": test["T_"+TASK+"_ANSW_TIME"],
-                    
-                }
+    '''
+    
+    values = tuple([UUID])
+    
+    try:   
+        with sqlite3.connect(DB_PATH) as db:
+            column = db.execute(sql, values)
+            column_names = [desc[0] for desc in column.description]
+            column = column.fetchone()
+            test = dict(zip(column_names, column))
+    except sqlite3.Error as e:
+        print(f"Error executing SQL query: {e}")
+        return {"TASK_TEXT": f"Error executing SQL query: {e}"}
+    finally:
+        db.close() 
+    
+    try:
+        
+        pic = image_to_base64(test["T_"+TASK+"_PIC"]) if test["T_"+TASK+"_PIC"] is not None else None
+        return {
+                        "UUID": test["UUID"],
+                        "TEST": test["TEST"],
+                        "NAME": test["NAME"],
+                        "NUM": test["NUM"],
+                        "LETTER": test["LETTER"],
+                        "TIME_START": test["TIME_START"],
+                        "COUNT": test["COUNT"],
+                        "LOCK": test["LOCK"],
+                        
+                        "TASK_TEXT": test["T_"+TASK+"_TEXT"],
+                        "TASK_PIC": pic,
+                        "ANSW": test["T_"+TASK+"_ANSW"],
+                        "ANSW_TIME": test["T_"+TASK+"_ANSW_TIME"],
+                        
+                    }
+    except Exception as e:
+        print(f"Error: {e}")
+        return {"TASK_TEXT": f"Error executing SQL query: {e}"}
 
 """
 # на raspberry не поддерживается RETURNING в sqlite
@@ -94,11 +139,15 @@ def tbl_get_full_test_and_lock(UUID):
 
      
 def tbl_set_answ(UUID, task, answ):
+    if task.isdigit():
+        task = int(task)
+    else:
+        task = 1
     sql = f'''
     UPDATE tests 
        SET 
-        T_{int(task)}_ANSW = (?),
-        T_{int(task)}_ANSW_TIME = (?)
+        T_{task}_ANSW = (?),
+        T_{task}_ANSW_TIME = (?)
      WHERE UUID = (?) and LOCK = 0;
     '''
     with sqlite3.connect(DB_PATH) as db:
@@ -110,7 +159,7 @@ def tbl_set_answ(UUID, task, answ):
 
 
 def generate_test(TEST):
-    if not TEST in os.listdir(path='./tests'):
+    if not os.path.exists(f'./tests/{TEST}'):
         return {}
         
     if "win" in platform:
@@ -121,7 +170,7 @@ def generate_test(TEST):
         result = subprocess.run(['python3', f'./tests/{TEST}'],
                             stdout=subprocess.PIPE,
                             stderr=subprocess.PIPE)
-    
+    print(result.stdout)
     if "win" in platform:
         d = json.loads(result.stdout.decode('cp1251'))
     else:
@@ -185,12 +234,14 @@ def tbl_get_results(TIME_START, NUM, LETTER, TEST):
               TIME_START DESC;
     '''
     with sqlite3.connect(DB_PATH) as db:
-        column = db.execute(sql, (TIME_START, NUM, LETTER, TEST,))
+        column = db.execute(sql, (TIME_START, NUM.encode("ascii", errors="ignore").decode(), LETTER.encode("ascii", errors="ignore").decode(), TEST.encode("ascii", errors="ignore").decode(),))
         column_names = [desc[0] for desc in column.description]
         column = column.fetchall()  
     data = [dict(zip(column_names, column[i])) for i in range(len(column))]
     return data
-    
+
+
+'''    
     
 def get_40_tests(TEST):
     # Преднастройка документа и парсера html
@@ -222,3 +273,23 @@ def get_40_tests(TEST):
     document.save(target_stream)
     print('готово')
     return target_stream.getvalue()
+'''
+
+
+def tbl_backup():
+    backup_file = DB_PATH+'.backup.db'
+    db_file = DB_PATH
+    try:
+        if os.path.exists(backup_file):
+            os.remove(backup_file)
+
+        with sqlite3.connect(db_file) as source:
+            with sqlite3.connect(backup_file) as target:
+                source.backup(target)
+        return True
+    except:
+        return False
+
+
+if __name__ == "__main__":
+    print(tbl_backup())

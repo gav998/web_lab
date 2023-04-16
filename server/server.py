@@ -2,10 +2,10 @@ import os
 import cherrypy
 import uuid
 import utils
-from cherrypy.lib import static
+# from cherrypy.lib import static
 
 
-class StringGenerator(object):    
+class StringGenerator:    
     @cherrypy.expose
     def index(self):
         return "Тестовый сервер API v1"
@@ -15,6 +15,7 @@ class StringGenerator(object):
     @cherrypy.tools.json_out()
     def test_list(self):
         tests = os.listdir(path='./tests')
+        tests = [test for test in tests if test[0] != "_"]
         tests.sort()
         tests = {i : tests[i] for i in range(len(tests))}
         return tests
@@ -56,6 +57,18 @@ class StringGenerator(object):
         if KEY == PASS:
             return utils.tbl_get_db()
         return "Error: The KEY parameter is incorrect"
+    
+    
+    @cherrypy.expose
+    @cherrypy.tools.json_out()
+    def backup_db(self, KEY=""):
+        with open('./KEY.txt') as key_f:
+            PASS=key_f.readline().rstrip()
+            print(f'get_db {PASS} : {KEY}')      
+        if KEY == PASS:
+            return utils.tbl_backup()
+        return "Error: The KEY parameter is incorrect"
+
 
     @cherrypy.expose
     @cherrypy.tools.json_out()
@@ -79,6 +92,7 @@ class StringGenerator(object):
         return "Error: The KEY parameter is incorrect"
 
 
+'''
     @cherrypy.expose
     def get_40_tests(self, KEY="", TEST=""):
         with open('./KEY.txt') as key_f:
@@ -87,6 +101,7 @@ class StringGenerator(object):
         if KEY == PASS:
             return static.serve_fileobj(utils.get_40_tests(TEST), 'application/x-download', 'attachment', 'test.docx')
         return "Error: The KEY parameter is incorrect"
+'''
 
 if __name__ == '__main__':
     conf = {
