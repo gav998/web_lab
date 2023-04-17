@@ -19,6 +19,7 @@
 		-o-user-select: none;
 		user-select: none;
 	   }
+	   
     </style>
 	
   </head>
@@ -158,7 +159,7 @@
 						// было
 						// document.getElementById('TASK_TEXT').innerHTML = json['TASK_TEXT'];
 						//pic
-						document.getElementById('TASK_TEXT').innerHTML += (json['TASK_PIC'] != null) ? '<img src="data:image/png;base64, '+json['TASK_PIC']+'" alt="Red dot" />' : "";
+						document.getElementById('TASK_TEXT').innerHTML += (json['TASK_PIC'] != null) ? '<img src="data:image/png;base64, '+json['TASK_PIC']+'" class="img-fluid" alt="Red dot" />' : "";
 						
 						document.getElementById('ANSW_TIME').innerHTML = (json['ANSW_TIME'] != null) ? json['ANSW_TIME'].slice(0, 19) : "";
 						document.getElementById('ANSW').value = json['ANSW'];

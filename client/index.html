@@ -128,6 +128,9 @@
 					url.searchParams.set('name', name);
 					url.searchParams.set('num', num);
 					url.searchParams.set('letter', letter);
+					
+					document.getElementById('TEST_LIST').innerHTML = '<div class="text-center"><div class="spinner-border m-5" role="status"><span class="visually-hidden">Loading...</span></div></div>';
+					
 					let response = await fetch(url);
 
 					if (response.ok) { // если HTTP-статус в диапазоне 200-299
