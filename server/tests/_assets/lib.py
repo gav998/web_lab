@@ -59,7 +59,7 @@ def generate_task_2_1():
 
     def contains_bad_words(text):
         import re
-        with open("./tests/_assets/bad_words.txt") as f:
+        with open("./tests/_assets/bad_words.txt", encoding="utf-8") as f:
             bad_words_list = [i.rstrip() for i in f]
         pattern = re.compile('|'.join(bad_words_list), re.IGNORECASE)
         match = pattern.search(text)
@@ -166,9 +166,9 @@ def generate_task_4_1():
         # Plot the table
         fig, ax = plt.subplots(figsize=(5, 5))
         ax.axis('off')
-        ax.table(cellText=df.values, colLabels=df.columns, rowLabels=df.index, cellLoc='center', loc='center', edges='closed')
+        ax.table(cellText=df.values, colLabels=df.columns, rowLabels=df.index, cellLoc='center', loc='top', edges='closed')
         name = './tests/_assets/'+str(uuid.uuid4())+'.png'
-        plt.savefig(name, dpi=300, bbox_inches='tight')
+        plt.savefig(name, dpi=300, bbox_inches='tight', pad_inches=0, transparent=True)
         plt.close()
         return name
 
@@ -201,6 +201,53 @@ def generate_task_4_1():
 
 
 
+def generate_task_5_1():
+    '''У исполнителя Программист две команды, которым присвоены номера:
+1. добавь 1
+2. умножь на Х
+Первая из них увеличивает число на экране на 1, вторая умножает число на Х. Известно, что алгоритм 11211 получает из числа 3 число 22. Найдите Х. Если таких чисел несколько, запишите наибольшее.'''
+    a = random.randint(1,3)
+    c1 = random.randint(1,3)
+    c2 = random.randint(2,7)
+    b = (a+c1+c1)*c2+c1+c1
+    task = f"У исполнителя Программист две команды, которым присвоены номера:<br><br>"
+    task+= f"1. добавь {c1}<br><br>"
+    task+= f"2. умножь на Х<br><br>"
+    task+= f"Первая из них увеличивает число на экране на {c1}, вторая умножает число на Х. Известно, что алгоритм 11211 получает из числа {a} число {b}. Найдите Х. Если таких чисел несколько, запишите наибольшее.<br><br>"
+    answer = f'{c2}'
+    return task, answer   
+
+def generate_task_6_1():
+    task = f"Ниже приведена программа, записанная на пяти языках программирования.<br><br>"
+    pic = './tests/_assets/6.PNG'
+    task+= f"Было проведено 9 запусков программы, при которых в качестве значений переменных s и k вводились следующие пары чисел:<br><br>"
+    ps = [(random.randint(-10,15), random.randint(6,15)), # +
+         (random.randint(-10,-7), random.randint(6,15)),  # +
+         (random.randint(-10,-7), random.randint(-10,5)), # -
+         (random.randint(-10,-7), random.randint(-10,5)), # -
+         (random.randint(-10,-7), random.randint(-10,5)), # -
+         (random.randint(-10,-7), random.randint(-10,5)), # -
+         (random.randint(-7,3), random.randint(-10,5)), # этот
+         (random.randint(5,10), random.randint(-10,5)),   # +-
+         (random.randint(5,10), random.randint(-10,5)),]  # +-
+    random.shuffle(ps)
+    s = ''
+    for p in ps:
+        s = s + f'({p[0]}, {p[1]}); '
+    task+= s
+    answer = ''
+    
+    for a in range(-10, 15):
+        c = 0
+        for p in ps:
+            if not(p[0] > a or p[1] > 5):
+                c = c+1
+        # print(var,a,c)
+        if c == 5:
+            answer = f'{a}' 
+            break
+    task+= '<br><br>Укажите минимальное целое значение параметра А, при котором для указанных входных данных программа напечатает «НЕТ» 5 раз.<br><br>'
+    return task, answer, pic
 
 
 def generate_task_7_ip(num_of_parts):
@@ -308,60 +355,102 @@ def generate_task_7_file():
     for code, value in url_codes.items():
         task += f"{code}){value}<br><br>"
 
-    return task, answer    
+    return task, answer
 
-def generate_task_5_1():
-    '''У исполнителя Программист две команды, которым присвоены номера:
-1. добавь 1
-2. умножь на Х
-Первая из них увеличивает число на экране на 1, вторая умножает число на Х. Известно, что алгоритм 11211 получает из числа 3 число 22. Найдите Х. Если таких чисел несколько, запишите наибольшее.'''
-    a = random.randint(1,3)
-    c1 = random.randint(1,3)
-    c2 = random.randint(2,7)
-    b = (a+c1+c1)*c2+c1+c1
-    task = f"У исполнителя Программист две команды, которым присвоены номера:<br><br>"
-    task+= f"1. добавь {c1}<br><br>"
-    task+= f"2. умножь на Х<br><br>"
-    task+= f"Первая из них увеличивает число на экране на {c1}, вторая умножает число на Х. Известно, что алгоритм 11211 получает из числа {a} число {b}. Найдите Х. Если таких чисел несколько, запишите наибольшее.<br><br>"
-    answer = f'{c2}'
-    return task, answer   
+def generate_task_8_1():
+    def create_table_pic(records):
+        import uuid
+        import pandas as pd
+        import matplotlib.pyplot as plt
+        # Create a DataFrame
+        data = []
+        data.append(['Запрос', 'Количество страниц'])
+        for i in range(0,len(records)):
+            data.append([str(records[i][0]), str(records[i][1])])
+        
+        df = pd.DataFrame(data) #, columns=points, index=points
+        # Plot the table
+        fig, ax = plt.subplots(figsize=(5, 5))
+        ax.axis('off')
+        ax.table(cellText=df.values, cellLoc='center', loc='top', edges='closed') #colLabels=df.columns, rowLabels=df.index, 
+        name = './tests/_assets/'+str(uuid.uuid4())+'.png'
+        plt.savefig(name, dpi=300, bbox_inches='tight', pad_inches=0, transparent=True)
+        plt.close()
+        return name
 
-def generate_task_6_1():
-    task = f"Ниже приведена программа, записанная на пяти языках программирования.<br><br>"
-    pic = './tests/_assets/6.PNG'
-    task+= f"Было проведено 9 запусков программы, при которых в качестве значений переменных s и k вводились следующие пары чисел:<br><br>"
-    ps = [(random.randint(-10,15), random.randint(6,15)), # +
-         (random.randint(-10,-7), random.randint(6,15)),  # +
-         (random.randint(-10,-7), random.randint(-10,5)), # -
-         (random.randint(-10,-7), random.randint(-10,5)), # -
-         (random.randint(-10,-7), random.randint(-10,5)), # -
-         (random.randint(-10,-7), random.randint(-10,5)), # -
-         (random.randint(-7,3), random.randint(-10,5)), # этот
-         (random.randint(5,10), random.randint(-10,5)),   # +-
-         (random.randint(5,10), random.randint(-10,5)),]  # +-
-    random.shuffle(ps)
-    s = ''
-    for p in ps:
-        s = s + f'({p[0]}, {p[1]}); '
-    task+= s
-    answer = ''
-    
-    for a in range(-10, 15):
-        c = 0
-        for p in ps:
-            if not(p[0] > a or p[1] > 5):
-                c = c+1
-        # print(var,a,c)
-        if c == 5:
-            answer = f'{a}' 
-            break
-    task+= '<br><br>Укажите минимальное целое значение параметра А, при котором для указанных входных данных программа напечатает «НЕТ» 5 раз.<br><br>'
+
+    ra = random.choice(['Алдан', 'Александров', 'Алзамай', 'Анапа', 'Ачинск'])
+    ra = random.choice(['Алдан', 'Александров', 'Алзамай', 'Анапа', 'Ачинск'])
+    rb = random.choice(['Бакал', 'Балабаново', 'Балашиха', 'Балтийск', 'Барнаул'])
+    rc = random.choice(['Самара', 'Санкт-Петербург', 'Саратов', 'Севастополь', 'Смоленск'])
+    #
+    r1 = 'A'.replace("A", ra).replace("B", rb).replace("C", rc)
+    r2 = 'B'.replace("A", ra).replace("B", rb).replace("C", rc)
+    r3 = 'C'.replace("A", ra).replace("B", rb).replace("C", rc)
+    r4 = 'A & B'.replace("A", ra).replace("B", rb).replace("C", rc)
+    r5 = 'B & C'.replace("A", ra).replace("B", rb).replace("C", rc)
+    r6 = 'A & C'.replace("A", ra).replace("B", rb).replace("C", rc)
+    r7 = 'A & B & C'.replace("A", ra).replace("B", rb).replace("C", rc)
+    r8 = '(A | C) & B'.replace("A", ra).replace("B", rb).replace("C", rc)
+    #
+    rr1 = random.randint(100,200)
+    rr2 = random.randint(100,200)
+    rr3 = random.randint(100,200)
+    rr4 = random.randint(10,50)
+    rr5 = random.randint(10,50)
+    rr6 = random.randint(10,50)
+    rr7 = random.randint(3,6)
+    rr8 = rr4+rr5-rr7
+    #
+    task = f'Какое количество страниц будет найдено по запросу {r8}?<br><br>'
+    #
+    records = [
+        (r1, rr1),
+        (r2, rr2),
+        (r3, rr3),
+        (r4, rr4),
+        (r5, rr5),
+        (r6, rr6),
+        (r7, rr7),
+        
+    ]  
+    random.shuffle(records)
+
+    pic = create_table_pic(records)
+
+    answer = f'{rr8}' 
     return task, answer, pic
+    
+    
+def generate_task_9_1():
+    if random.randint(0,100)>50:
+        task = f"На рисунке – схема дорог, связывающих пункты A, B, C, D, E, F, G, H, I, J, K, L, M. По каждой дороге можно двигаться только в одном направлении, указанном стрелкой. Сколько существует различных путей из пункта А в пункт M, не проходящих через пункт E?<br><br>"
+        pic = './tests/_assets/9.1.png'
+        answer = f'79'
+    else:
+        task = f"На рисунке – схема дорог, связывающих пункты A, B, C, D, E, F, G, H, I, J, K, L, M. По каждой дороге можно двигаться только в одном направлении, указанном стрелкой. Сколько существует различных путей из пункта А в пункт M, проходящих через пункт J?<br><br>"
+        pic = './tests/_assets/9.2.png'
+        answer = f'21'  
+    return task, answer, pic
+    
+    
+    
+def generate_task_10_1():
+    def iz_10(N, m):
+        R = ''
+        while(N > 0):
+            R = hex(N % m)[2:] + R
+            N = N // m
+        return R
+    p = [3,5,6,9,11,13,15]
+    q = [2,4,7,8,12,14,16]
+    a = random.randint(72,255)
+    m = random.choice(p)
+    n = random.choice(q)
+    task = f'Переведите число <b>из системы счисления с основанием {m}</b><br><br><b>в систему счисления с основанием {n}</b><br><br>{iz_10(a,m).upper()}<sub>{m}</sub><br><br>'
+    answer = f"{iz_10(a,n).upper()}"
+
+    return task, answer
+    
 
 
-def iz_10(N, m):
-    R = ''
-    while(N > 0):
-        R = hex(N % m)[2:] + R
-        N = N // m
-    return R

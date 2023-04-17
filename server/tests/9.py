@@ -7,6 +7,7 @@ test = Test()
 test.new_task(*lib.generate_task_1_1())
 test.new_task(*lib.generate_task_1_2())
 test.new_task(*lib.generate_task_1_3())
+
 test.new_task(*lib.generate_task_2_1())
 test.new_task(*lib.generate_task_2_2())
 
@@ -19,8 +20,12 @@ test.new_task(*lib.generate_task_5_1())
 test.new_task(*lib.generate_task_6_1())
 
 test.new_task(*lib.generate_task_7_ip(4))
-
 test.new_task(*lib.generate_task_7_file())
 
+test.new_task(*lib.generate_task_8_1())
+
+test.new_task(*lib.generate_task_9_1())
+
+test.new_task(*lib.generate_task_10_1())
 
 print(test)

@@ -11,12 +11,17 @@ from PIL import Image
 from io import BytesIO
 
 def image_to_base64(image_path):
-    with Image.open(image_path) as img:
-        buffer = BytesIO()
-        img_format = img.format
-        img.save(buffer, format=img_format)
-        img_data = buffer.getvalue()
-    base64_str = base64.b64encode(img_data).decode('utf-8')
+    base64_str= ''
+    try:
+        with Image.open(image_path) as img:
+            buffer = BytesIO()
+            img_format = img.format
+            img.save(buffer, format=img_format)
+            img_data = buffer.getvalue()
+        base64_str = base64.b64encode(img_data).decode('utf-8')
+    except Exception as e:
+        print(e)
+        base64_str = str(e)
     return base64_str
 
 # from docx import Document
@@ -41,12 +46,7 @@ def tbl_new_uuid(UUID, TEST, NAME, NUM, LETTER):
     VALUES (?, ?, ?, ?, ?, ?, {placeholders});    
     '''
     
-    values = [UUID, 
-              TEST.encode("ascii", errors="ignore").decode(), 
-              NAME.upper().encode("ascii", errors="ignore").decode(), 
-              NUM.encode("ascii", errors="ignore").decode(), 
-              LETTER.encode("ascii", errors="ignore").decode(), 
-              datetime.datetime.today()]  
+    values = [UUID, TEST, NAME, NUM, LETTER, datetime.datetime.today()]  
     values.extend(test.values())
     values = tuple(values)
     
@@ -234,7 +234,7 @@ def tbl_get_results(TIME_START, NUM, LETTER, TEST):
               TIME_START DESC;
     '''
     with sqlite3.connect(DB_PATH) as db:
-        column = db.execute(sql, (TIME_START, NUM.encode("ascii", errors="ignore").decode(), LETTER.encode("ascii", errors="ignore").decode(), TEST.encode("ascii", errors="ignore").decode(),))
+        column = db.execute(sql, (TIME_START, NUM, LETTER, TEST,))
         column_names = [desc[0] for desc in column.description]
         column = column.fetchall()  
     data = [dict(zip(column_names, column[i])) for i in range(len(column))]
