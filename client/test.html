@@ -96,13 +96,12 @@
 
 
 			<script>
-				console.log("Начало работы");
 				
 				function read_get_values() {
 					console.log("Чтение GET параметров");
-					var p_url=location.search.substring(1);
-					var parametr=p_url.split("&");				
-					var values= new Array();
+					let p_url=location.search.substring(1);
+					let parametr=p_url.split("&");				
+					let values= new Array();
 					for(let i=0; i < parametr.length; i++){
 						j=parametr[i].split("="); 
 						values[j[0]]=unescape(j[1]);
@@ -110,39 +109,53 @@
 					console.log(values);
 					return values
 				}
+				
 				var values = read_get_values();
 				var UUID = values["UUID"];
+				var count = 1;
 				var task = 1;
+				
 				function set_task(t) {
 					task = t;
 					console.log("Выбрано задание №" + task);	
 				}
 				
+				// Вставка номеров заданий в блок навигации
+				function update_nav_list(){
+					let nav_list = "";
+					let active = "";
+					nav_list = nav_list + '<button class="btn btn-outline-danger" onclick="end()">Завершить</button>'
+					for(let i = 1; i<=count; i++){
+						if(i == task){
+							active = "btn-primary";
+						}else{
+							active = "btn-outline-primary";
+						}
+						nav_list = nav_list + '<button class="btn '+active+'" onClick="set_task('+i+');get_test()">'+i+'</button>';
+					}
+					document.getElementById('NAV_LIST').innerHTML = nav_list;
+				}
 				
-				
-			</script>
-			
-			<script>
-				console.log("Инициализация API функции получения инфо и текста задания get_test() используя UUID, task по адр get_test");	
 
+				// Инициализация API функции получения инфо и текста задания get_test() используя UUID, task по адр get_test	
 				async function get_test() {
-					console.log("get_test()");
 					let url = new URL(server + "get_test/");
 					url.searchParams.set('UUID', UUID);
 					url.searchParams.set('task', task);					
 					let response = await fetch(url);
 					if (response.ok) { // если HTTP-статус в диапазоне 200-299
 					  // получаем тело ответа
-					  let json = await response.json();
-					  console.log(json);
-					  console.log("Добавляем на страницу инфо о тесте");
+					  let json = await response.json();				  
+					  console.log(url.href,'\n', decodeURI(url.href),'\n', json);
+					  
+					  // Добавляем на страницу инфо о тесте
 						document.getElementById('HREF').innerHTML = location.href;	
 						document.getElementById('HREF').href = location.href;
 						
 						count = json['COUNT'];
 						update_nav_list();
 						
-						console.log("Добавляем инфо о пользователе");
+						// Добавляем инфо о пользователе
 
 						document.getElementById('TEST').innerHTML = json['TEST'];
 						document.getElementById('NAME').innerHTML = json['NAME'];
@@ -150,10 +163,10 @@
 						document.getElementById('LETTER').innerHTML = json['LETTER'];
 						document.getElementById('TIME_START').innerHTML = (json['TIME_START'] != null) ? json['TIME_START'].slice(0, 19) : "";
 						
-						console.log("Проверяем блокировку теста и выводим информационное сообщение");
+						// Проверяем блокировку теста и выводим информационное сообщение
 						document.getElementById('LOCK').style = (json['LOCK'] == 1) ? "" : "display:none;";						
 						
-						console.log("Добавляем на страницу текст задания и ответ пользователя");
+						// Добавляем на страницу текст задания и ответ пользователя
 						// исполняемый js script
 						setInnerHtml(document.querySelector('#TASK_TEXT'), json['TASK_TEXT']);
 						// было
@@ -163,19 +176,20 @@
 						
 						document.getElementById('ANSW_TIME').innerHTML = (json['ANSW_TIME'] != null) ? json['ANSW_TIME'].slice(0, 19) : "";
 						document.getElementById('ANSW').value = json['ANSW'];
+					  
 					} else {
+					  console.log(url.href,'\n', decodeURI(url.href),'\n', "Ошибка HTTP: " + response.status);
 					  alert("Ошибка HTTP: " + response.status);
 					}
 				}
 
+				// Запрос задания теста у сервера
 				get_test()
 				
 			</script>			
 			
 			<script>
-				console.log("Инициализация API функции отправки ответа по нажатию кнопки set_answ() используя ANSW по адр set_answ");	
-
-				
+				// Инициализация API функции отправки ответа по нажатию кнопки set_answ() используя ANSW по адр set_answ
 				async function set_answ()
 				{
 					console.log("set_answ()");	
@@ -188,43 +202,21 @@
 					if (response.ok) { // если HTTP-статус в диапазоне 200-299
 					  // получаем тело ответа
 					  let json = await response.json();
-					  console.log(json);
+					  console.log(url.href,'\n', decodeURI(url.href),'\n', json);
 					  document.getElementById('ANSW_TIME').innerHTML = (json['ANSW_TIME'] != null) ? json['ANSW_TIME'].slice(0, 19) : "";
 					  if (task < count){
 						set_task(task+1);
 					  }
 					  get_test();
 					} else {
+					  console.log(url.href,'\n', decodeURI(url.href),'\n', "Ошибка HTTP: " + response.status);
 					  alert("Ошибка HTTP: " + response.status);
 					}
 				}
 
 			</script>
 
-			
-			
-			
-			<script>
-				console.log("Вставка номеров заданий в блок навигации");
-				
-				var count;
-				function update_nav_list(){
-					let nav_list = "";
-					let active = "";
-					
-					nav_list = nav_list + '<button class="btn btn-outline-danger" onclick="end()">Завершить</button>'
-					for(let i = 1; i<=count; i++){
-						if(i == task){
-							active = "btn-primary";
-						}else{
-							active = "btn-outline-primary";
-						}
-						nav_list = nav_list + '<button class="btn '+active+'" onClick="set_task('+i+');get_test()">'+i+'</button>';
-					}
-					document.getElementById('NAV_LIST').innerHTML = nav_list;
-				}
-			</script>
-			
+
 			
 			<script>				
 				function end(){

@@ -66,8 +66,7 @@
 
 
 			<script>
-				console.log("Начало работы");
-				
+				// Начало работы
 				function read_get_values() {
 					console.log("Чтение GET параметров");
 					var p_url=location.search.substring(1);
@@ -86,18 +85,17 @@
 			</script>
 			
 			<script>
-				console.log("Инициализация API функции получения инфо и текста задания get_test() используя UUID, task по адр get_test");	
+				// Инициализация API функции получения инфо и текста задания get_test() используя UUID, task по адр get_test
 
 				async function get_full_test_and_lock() {
-					console.log("get_full_test_and_lock()");
 					let url = new URL(server + "get_full_test_and_lock/");
 					url.searchParams.set('UUID', UUID);				
 					let response = await fetch(url);
 					if (response.ok) { // если HTTP-статус в диапазоне 200-299
 					  // получаем тело ответа
 					  let json = await response.json();
-					  console.log(json);
-					  console.log("Добавляем на страницу инфо о тесте");
+					  console.log(url.href,'\n', decodeURI(url.href),'\n', json);
+					  // Добавляем на страницу инфо о тесте
 						document.getElementById('HREF').innerHTML = location.href;	
 						document.getElementById('HREF').href = location.href;
 						document.getElementById('TOTEST').href = './test.html?UUID=' + UUID
@@ -125,6 +123,7 @@
 						document.getElementById('RES_TABLE').innerHTML = msg;
 						document.getElementById('PROCENT').innerHTML = String(count_success/count*100).slice(0, 3)+"%";
 					} else {
+					  console.log(url.href,'\n', decodeURI(url.href),'\n', "Ошибка HTTP: " + response.status);
 					  alert("Ошибка HTTP: " + response.status);
 					}
 				}

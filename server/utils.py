@@ -34,8 +34,11 @@ CURR_PATH = os.path.abspath(os.getcwd())
 DB_PATH = CURR_PATH + "/data.db"
 
  
-def tbl_new_uuid(UUID, TEST, NAME, NUM, LETTER): 
+def tbl_new_uuid(UUID, TEST, NAME, NUM, LETTER):
+    
     test = generate_test(TEST)
+    if not test:
+        return "Error: TEST.py not found"
     
     keys = ', '.join([f'"{key}"' for key in test.keys()])
     placeholders = ', '.join(['?' for _ in test.keys()])
@@ -74,15 +77,18 @@ def tbl_get_test(UUID, TASK):
             column = db.execute(sql, values)
             column_names = [desc[0] for desc in column.description]
             column = column.fetchone()
+            if not column:
+                return {"TASK_TEXT": "Error: UUID not found"}
             test = dict(zip(column_names, column))
     except sqlite3.Error as e:
         print(f"Error executing SQL query: {e}")
         return {"TASK_TEXT": f"Error executing SQL query: {e}"}
     finally:
         db.close() 
-    
-    try:
         
+    try:
+        if not (1 <= int(TASK) <= test["COUNT"]):
+            return {"TASK_TEXT": "Error: TASK not found"}
         pic = image_to_base64(test["T_"+TASK+"_PIC"]) if test["T_"+TASK+"_PIC"] is not None else None
         return {
                         "UUID": test["UUID"],
@@ -102,7 +108,7 @@ def tbl_get_test(UUID, TASK):
                     }
     except Exception as e:
         print(f"Error: {e}")
-        return {"TASK_TEXT": f"Error executing SQL query: {e}"}
+        return {"TASK_TEXT": f"Error executing: {e}"}
 
 """
 # на raspberry не поддерживается RETURNING в sqlite
@@ -129,13 +135,21 @@ def tbl_get_full_test_and_lock(UUID):
      WHERE UUID = (?);
     '''
     sql2 = f'''SELECT * FROM tests WHERE UUID = (?);'''
-    with sqlite3.connect(DB_PATH) as db:
-        db.execute(sql1, (UUID,)).fetchone()
-        column = db.execute(sql2, (UUID,))
-        column_names = [desc[0] for desc in column.description]
-        column = column.fetchone()
-        test = dict(zip(column_names, column))
-    return test
+    try:
+        with sqlite3.connect(DB_PATH) as db:
+            db.execute(sql1, (UUID,)).fetchone()
+            column = db.execute(sql2, (UUID,))
+            column_names = [desc[0] for desc in column.description]
+            column = column.fetchone()
+            if not column:
+                return {"TASK_TEXT": "Error: UUID not found"}
+            test = dict(zip(column_names, column))
+        return test
+    except sqlite3.Error as e:
+        print(f"Error executing SQL query: {e}")
+        return {"TASK_TEXT": f"Error executing SQL query: {e}"}
+    finally:
+        db.close()
 
      
 def tbl_set_answ(UUID, task, answ):
@@ -150,16 +164,22 @@ def tbl_set_answ(UUID, task, answ):
         T_{task}_ANSW_TIME = (?)
      WHERE UUID = (?) and LOCK = 0;
     '''
-    with sqlite3.connect(DB_PATH) as db:
-        answ_time = datetime.datetime.today()
-        db.execute(sql, (answ, answ_time, UUID,))
-    return {
-                    "ANSW_TIME": str(answ_time),
-                }
+    try:
+        with sqlite3.connect(DB_PATH) as db:
+            answ_time = datetime.datetime.today()
+            db.execute(sql, (answ, answ_time, UUID,))
+        return {
+                        "ANSW_TIME": str(answ_time),
+                    }
+    except sqlite3.Error as e:
+        print(f"Error executing SQL query: {e}")
+        return {"TASK_TEXT": f"Error executing SQL query: {e}"}
+    finally:
+        db.close()
 
 
 def generate_test(TEST):
-    if not os.path.exists(f'./tests/{TEST}'):
+    if not TEST in os.listdir(path='./tests'):
         return {}
         
     if "win" in platform:

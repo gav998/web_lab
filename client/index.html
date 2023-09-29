@@ -73,31 +73,25 @@
 
 			<script>
 			
-				console.log("Инициализация API функции получения списка тестов get_test_list() по адр test_list");
 		
+				// Инициализация API функции получения списка тестов
 				async function get_test_list() {
-					console.log("get_test_list");
-					
-					let url = server + "test_list/"
-					
+				let url = new URL(server + "test_list/")
 					let response = await fetch(url);
-
 					if (response.ok) { // если HTTP-статус в диапазоне 200-299
 					  // получаем тело ответа
 					  let json = await response.json();
-					  console.log(json);
+					  console.log(url.href,'\n', decodeURI(url.href),'\n', json);
 					  return json;
 					} else {
-					  alert("Ошибка HTTP: " + response.status);
-					  
+					  console.log(url.href,'\n', decodeURI(url.href),'\n', "Ошибка HTTP: " + response.status);
+					  alert("Ошибка HTTP: " + response.status); 
 					}
 				}
 
-
-				console.log("Запрос списка тестов у сервера");			
+				// Запрос списка тестов у сервера
 				get_test_list().then(
 					response => {
-						console.log("Получен список тестов у сервера");	
 						let msg = ""
 						for (let key in response){
 							msg = msg + '<button type="submit" class="btn btn-outline-primary text-start" onClick="send_choice_and_get_uuid('+ "'" + response[key] + "'" + ');">'+response[key]+'</button>'
@@ -107,15 +101,9 @@
 					},
 					error => alert(`Rejected: ${error}`)
 				  );
-			</script>
 			
-			
-			<script>
-			
-				console.log("Инициализация API функции получения UUID теста send_choice_and_get_uuid(test) по адр get_uuid и редирект на тест");
-				async function send_choice_and_get_uuid(test) {
-					console.log("send_choise_and_get_uuid");
-					
+				// Инициализация API функции получения UUID теста send_choice_and_get_uuid(test) по адр get_uuid и редирект на тест
+				async function send_choice_and_get_uuid(test) {					
 					let form = document.forms.my; 
 					
 					let name = form.elements.inputName.value;
@@ -123,7 +111,6 @@
 					let letter = form.elements.inputLetter.value;
 					
 					if (letter == false || num == false || name == false) {
-						alert("Вы не указали свои данные!");
 						return false;
 					}
 					
@@ -140,10 +127,11 @@
 					if (response.ok) { // если HTTP-статус в диапазоне 200-299
 					  // получаем тело ответа
 					  let json = await response.json();
-					  console.log(json);
+					  console.log(url.href,'\n', decodeURI(url.href),'\n', json);
 					  document.location.href = './test.html?UUID='+json['UUID'];
 					  return json;
 					} else {
+					  console.log(url.href,'\n', decodeURI(url.href),'\n', "Ошибка HTTP: " + response.status);
 					  alert("Ошибка HTTP: " + response.status);
 					}
 				}
