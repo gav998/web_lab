@@ -10,6 +10,13 @@ import base64
 from PIL import Image
 from io import BytesIO
 
+
+import urllib.parse as urllp
+def encodeURI(s): return urllp.quote(s, safe="~@#$&()*!+=:;,.?/'")
+def decodeURI(s): return urllp.unquote(s, errors="strict")
+def encodeURIComponent(s): return urllp.quote(s, safe="~()*!.'")
+def decodeURIComponent(s): return urllp.unquote(s, errors="strict")
+
 def image_to_base64(image_path):
     base64_str= ''
     try:
@@ -190,13 +197,15 @@ def generate_test(TEST):
         result = subprocess.run(['python3', f'./tests/{TEST}'],
                             stdout=subprocess.PIPE,
                             stderr=subprocess.PIPE)
-    print(result.stdout)
-    if "win" in platform:
-        d = json.loads(result.stdout.decode('cp1251'))
-    else:
-        d = json.loads(result.stdout.decode('utf-8'))
-
-    return d
+    print(result.stdout, result.stderr)
+    try:
+        if "win" in platform:
+            d = json.loads(result.stdout.decode('cp1251'))
+        else:
+            d = json.loads(result.stdout.decode('utf-8'))
+        return d
+    except:
+        return None
     
     
 def tbl_get_db():
@@ -309,6 +318,26 @@ def tbl_backup():
         return True
     except:
         return False
+        
+        
+def get_test_py(TEST):
+    if not TEST in os.listdir(path='./tests'):
+        return {}
+    
+    with open(f'./tests/{TEST}', encoding="utf-8") as code:
+        return code.read()
+        
+def save_test_py(TEST, CODE):
+    with open(f'./tests/{TEST}', 'w', encoding="utf-8") as code:
+        code.write(decodeURIComponent(CODE))
+    return {"TIME_SAVE": f"{datetime.datetime.today()}"}
+        
+def del_test_py(TEST):
+    try:
+        os.rename(f'./tests/{TEST}', f'./tests/_{TEST}')
+        print(f"Файл {TEST} скрыт успешно.")
+    except OSError as e:
+        print(f"Ошибка при скрытии файла {TEST}: {e}")
 
 
 if __name__ == "__main__":

@@ -92,6 +92,28 @@ class StringGenerator:
         return "Error: The KEY parameter is incorrect"
 
 
+
+    @cherrypy.expose
+    @cherrypy.tools.json_out()
+    def get_test_py(self, KEY="", TEST=""):
+        with open('./KEY.txt') as key_f:
+            PASS=key_f.readline().rstrip()
+            print(f'get_results {PASS} : {KEY}')      
+        if KEY == PASS:
+            return utils.get_test_py(TEST)
+        return "Error: The KEY parameter is incorrect"
+
+    @cherrypy.expose
+    @cherrypy.tools.json_out()
+    def save_test_py(self, KEY="", TEST="", CODE=""):
+        with open('./KEY.txt') as key_f:
+            PASS=key_f.readline().rstrip()
+            print(f'get_results {PASS} : {KEY}')      
+        if KEY == PASS:
+            return utils.save_test_py(TEST, CODE)
+        return "Error: The KEY parameter is incorrect"
+
+
 '''
     @cherrypy.expose
     def get_40_tests(self, KEY="", TEST=""):
