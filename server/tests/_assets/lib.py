@@ -200,6 +200,59 @@ def generate_task_4_1():
     return task, answer, pic
 
 
+def generate_task_4_2():
+    def create_table_pic(points, roads):
+        import uuid
+        import pandas as pd
+        import matplotlib.pyplot as plt
+        data = []
+        # Create a DataFrame
+        for point1 in points:
+            row = []
+            for point2 in points:
+                if (point1, point2) in roads:
+                    row.append(roads[(point1, point2)])
+                elif (point2, point1) in roads:
+                    row.append(roads[(point2, point1)])
+                else:
+                    row.append("")
+            data.append(row)
+        df = pd.DataFrame(data, columns=points, index=points)
+        # Plot the table
+        fig, ax = plt.subplots(figsize=(5, 5))
+        ax.axis('off')
+        ax.table(cellText=df.values, colLabels=df.columns, rowLabels=df.index, cellLoc='center', loc='top', edges='closed')
+        name = './tests/_assets/'+str(uuid.uuid4())+'.png'
+        plt.savefig(name, dpi=300, bbox_inches='tight', pad_inches=0, transparent=True)
+        plt.close()
+        return name
+
+    points = ['A', 'B', 'C', 'D', 'E', 'F']
+    roads = {
+        ('A', 'B'): random.randint(2, 6),
+        ('A', 'C'): random.randint(10, 20),
+        ('A', 'D'): random.randint(20, 30),
+        ('A', 'E'): random.randint(30, 40),
+        ('A', 'F'): random.randint(50, 70),
+        ('B', 'C'): random.randint(5,  15),
+        ('C', 'D'): random.randint(5, 15),
+        ('D', 'E'): random.randint(5, 15),
+        ('E', 'F'): random.randint(10, 24),
+    }
+    task = f"Между населёнными пунктами A, B, C, D, E, F построены дороги, протяжённость которых приведена в таблице.<br><br>"
+    task+= f"Определите длину кратчайшего пути между пунктами A и F.<br><br> Передвигаться можно только по дорогам, указанным в таблице."
+    pic = create_table_pic(points, roads)
+    
+    options = [
+        roads[('A', 'B')] + roads[('B', 'C')] + roads[('C', 'D')] + roads[('D', 'E')] + roads[('E', 'F')],
+        roads[('A', 'C')] + roads[('C', 'D')] + roads[('D', 'E')] + roads[('E', 'F')],
+        roads[('A', 'D')] + roads[('D', 'E')] + roads[('E', 'F')],
+        roads[('A', 'E')] + roads[('E', 'F')],
+        roads[('A', 'F')],
+    ]
+    answer = min(options)
+    return task, answer, pic
+
 
 def generate_task_5_1():
     '''У исполнителя Программист две команды, которым присвоены номера:
@@ -219,7 +272,7 @@ def generate_task_5_1():
 
 def generate_task_6_1():
     task = f"Ниже приведена программа, записанная на пяти языках программирования.<br><br>"
-    pic = './tests/_assets/6.PNG'
+    pic = './tests/_assets/6.png'
     task+= f"Было проведено 9 запусков программы, при которых в качестве значений переменных s и k вводились следующие пары чисел:<br><br>"
     ps = [(random.randint(-10,15), random.randint(6,15)), # +
          (random.randint(-10,-7), random.randint(6,15)),  # +

@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Версия для печати</title>
+	<link rel="icon" href="data:,">
+    <link href="./bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+    <script src="./bootstrap.bundle.min.js"></script>
+	<script src="./conf.js"></script>
+	<script src="./fn.js"></script>	
+	
+	<div class="container">
+	  <div class="row py-3">
+		<div class="col">
+		
+		  <div class="col-12 btn-group-vertical" role="group" id='TEST'>		
+			<div class="text-center">
+			  <div class="spinner-border m-5" role="status">
+				<span class="visually-hidden">Loading...</span>
+			  </div>
+			</div>	
+		  </div>
+		
+		</div>
+	  </div>
+	</div>
+
+
+	<script>
+		// Начало работы
+		var values = read_GET_values();
+		var UUID = values["UUID"];
+
+
+		get_full_test_and_lock(UUID).then(
+			response => { 
+				// Добавляем на страницу инфо о тесте
+
+				let count = response['COUNT'];
+				
+				let msg = "";
+				let answ = "";
+				answ = answ + '<table class="table table-bordered">';
+				for (let i = 1; i <= count; i++){
+					// Формируем список заданий
+					msg += '<div class="container"><b>№'+i+'.</b> '+response['T_'+i+'_TEXT']
+					msg += (response['T_'+i+'_PIC'] != null) ? '<img src="data:image/png;base64, '+response['T_'+i+'_PIC']+'" class="img-fluid" alt="Red dot" />' : "";	
+					msg +='</div>';
+				
+				
+					
+					answ = answ + '<tr>';
+					answ = answ + '<td >'+i+'</td>';
+					answ = answ + '<td >'+response['T_'+i+'_ANSW_CORRECT']+'</td>';
+					answ = answ + '</tr>';
+				}
+				answ = answ + '</table>';
+				document.getElementById('TEST').innerHTML = msg + answ;
+			},
+			error => alert(`Rejected: ${error}`)
+		);	
+	</script>			
+			
+
+  </body>
+</html>

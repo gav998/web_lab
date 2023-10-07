@@ -10,6 +10,7 @@
   <body>
     <script src="./bootstrap.bundle.min.js"></script>
 	<script src="./conf.js"></script>
+	<script src="./fn.js"></script>
 	
 	
 	
@@ -71,71 +72,45 @@
 	</div>
 
 
-			<script>
-			
+	<script>
 		
-				// Инициализация API функции получения списка тестов
-				async function get_test_list() {
-				let url = new URL(server + "test_list/")
-					let response = await fetch(url);
-					if (response.ok) { // если HTTP-статус в диапазоне 200-299
-					  // получаем тело ответа
-					  let json = await response.json();
-					  console.log(url.href,'\n', decodeURI(url.href),'\n', json);
-					  return json;
-					} else {
-					  console.log(url.href,'\n', decodeURI(url.href),'\n', "Ошибка HTTP: " + response.status);
-					  alert("Ошибка HTTP: " + response.status); 
-					}
-				}
 
-				// Запрос списка тестов у сервера
-				get_test_list().then(
-					response => {
-						let msg = ""
-						for (let key in response){
-							msg = msg + '<button type="submit" class="btn btn-outline-primary text-start" onClick="send_choice_and_get_uuid('+ "'" + response[key] + "'" + ');">'+response[key]+'</button>'
-						}
-						document.getElementById('TEST_LIST').innerHTML = msg;
-						
-					},
-					error => alert(`Rejected: ${error}`)
-				  );
+// Запрос списка тестов у сервера
+get_test_list().then(
+	response => {
+		let msg = ""
+		for (let key in response){
+			msg = msg + '<button type="submit" class="btn btn-outline-primary text-start" onClick="redirect('+ "'" + response[key] + "'" + ');">'+response[key]+'</button>'
+		}
+		document.getElementById('TEST_LIST').innerHTML = msg;
+		
+	},
+	error => alert(`Rejected: ${error}`)
+  );
+	
+	
+function redirect(test){
+	let form = document.forms.my; 
+	let name = form.elements.inputName.value;
+	let num = form.elements.inputNum.value;
+	let letter = form.elements.inputLetter.value;
+
+	if (letter == false || num == false || name == false) {
+		return false;
+	}
+
+	document.getElementById('TEST_LIST').innerHTML = '<div class="text-center"><div class="spinner-border m-5" role="status"><span class="visually-hidden">Loading...</span></div></div>';
+
+	send_choice_and_get_uuid(test, name, num, letter).then(
+		response => {
+			document.location.href = './test.html?UUID='+response['UUID'];	
+		},
+		error => alert(`Rejected: ${error}`)
+	);
+}	
 			
-				// Инициализация API функции получения UUID теста send_choice_and_get_uuid(test) по адр get_uuid и редирект на тест
-				async function send_choice_and_get_uuid(test) {					
-					let form = document.forms.my; 
-					
-					let name = form.elements.inputName.value;
-					let num = form.elements.inputNum.value;
-					let letter = form.elements.inputLetter.value;
-					
-					if (letter == false || num == false || name == false) {
-						return false;
-					}
-					
-					let url = new URL(server + "get_uuid/");
-					url.searchParams.set('test', test);
-					url.searchParams.set('name', name);
-					url.searchParams.set('num', num);
-					url.searchParams.set('letter', letter);
-					
-					document.getElementById('TEST_LIST').innerHTML = '<div class="text-center"><div class="spinner-border m-5" role="status"><span class="visually-hidden">Loading...</span></div></div>';
-					
-					let response = await fetch(url);
 
-					if (response.ok) { // если HTTP-статус в диапазоне 200-299
-					  // получаем тело ответа
-					  let json = await response.json();
-					  console.log(url.href,'\n', decodeURI(url.href),'\n', json);
-					  document.location.href = './test.html?UUID='+json['UUID'];
-					  return json;
-					} else {
-					  console.log(url.href,'\n', decodeURI(url.href),'\n', "Ошибка HTTP: " + response.status);
-					  alert("Ошибка HTTP: " + response.status);
-					}
-				}
-			</script>
+	</script>
 			
 	
   </body>

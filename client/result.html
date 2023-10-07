@@ -10,6 +10,7 @@
   <body>
     <script src="./bootstrap.bundle.min.js"></script>
 	<script src="./conf.js"></script>
+	<script src="./fn.js"></script>
 	
 	<div class="container">
 	  <div class="row border-bottom border-primary py-3">
@@ -65,71 +66,46 @@
 	</div>
 
 
-			<script>
-				// Начало работы
-				function read_get_values() {
-					console.log("Чтение GET параметров");
-					var p_url=location.search.substring(1);
-					var parametr=p_url.split("&");				
-					var values= new Array();
-					for(let i=0; i < parametr.length; i++){
-						j=parametr[i].split("="); 
-						values[j[0]]=unescape(j[1]);
-					}
-					console.log(values);
-					return values
-				}
-				var values = read_get_values();
-				var UUID = values["UUID"];
+	<script>
+		// Начало работы
+		var values = read_GET_values();
+		var UUID = values["UUID"];
 
-			</script>
-			
-			<script>
-				// Инициализация API функции получения инфо и текста задания get_test() используя UUID, task по адр get_test
 
-				async function get_full_test_and_lock() {
-					let url = new URL(server + "get_full_test_and_lock/");
-					url.searchParams.set('UUID', UUID);				
-					let response = await fetch(url);
-					if (response.ok) { // если HTTP-статус в диапазоне 200-299
-					  // получаем тело ответа
-					  let json = await response.json();
-					  console.log(url.href,'\n', decodeURI(url.href),'\n', json);
-					  // Добавляем на страницу инфо о тесте
-						document.getElementById('HREF').innerHTML = location.href;	
-						document.getElementById('HREF').href = location.href;
-						document.getElementById('TOTEST').href = './test.html?UUID=' + UUID
-						document.getElementById('TEST').innerHTML = json['TEST'];
-						document.getElementById('NAME').innerHTML = json['NAME'];
-						document.getElementById('NUM').innerHTML = json['NUM'];
-						document.getElementById('LETTER').innerHTML = json['LETTER'];
-						document.getElementById('TIME_START').innerHTML = (json['TIME_START'] != null) ? json['TIME_START'].slice(0, 19) : "";
-						var count = json['COUNT'];
-						let count_success = 0;
-						
-						var msg = ""
-						for (let i = 1; i <= count; i++){
-							if (json['T_'+i+'_ANSW'] == json['T_'+i+'_ANSW_CORRECT']){
-								msg = msg + '<tr class="table-success">';
-								count_success = count_success + 1;
-							}else{
-								msg = msg + '<tr class="table-danger">';
-							}
-							msg = msg + '<th scope="row">'+i+'</th>';
-							msg = msg + '<td >'+json['T_'+i+'_ANSW']+'</td>';
-							msg = msg + '<td >'+json['T_'+i+'_ANSW_CORRECT']+'</td>';
-							msg = msg + '</tr>';
-						}
-						document.getElementById('RES_TABLE').innerHTML = msg;
-						document.getElementById('PROCENT').innerHTML = String(count_success/count*100).slice(0, 3)+"%";
-					} else {
-					  console.log(url.href,'\n', decodeURI(url.href),'\n', "Ошибка HTTP: " + response.status);
-					  alert("Ошибка HTTP: " + response.status);
-					}
-				}
+		get_full_test_and_lock(UUID).then(
+			response => { 
+				// Добавляем на страницу инфо о тесте
+				document.getElementById('HREF').innerHTML = location.href;	
+				document.getElementById('HREF').href = location.href;
+				document.getElementById('TOTEST').href = './test.html?UUID=' + UUID;
+				document.getElementById('TEST').innerHTML = response['TEST'];
+				document.getElementById('NAME').innerHTML = response['NAME'];
+				document.getElementById('NUM').innerHTML = response['NUM'];
+				document.getElementById('LETTER').innerHTML = response['LETTER'];
+				document.getElementById('TIME_START').innerHTML = (response['TIME_START'] != null) ? response['TIME_START'].slice(0, 19) : "";
+				var count = response['COUNT'];
+				let count_success = 0;
 				
-				get_full_test_and_lock();
-			</script>			
+				var msg = ""
+				for (let i = 1; i <= count; i++){
+					if (response['T_'+i+'_ANSW'] == response['T_'+i+'_ANSW_CORRECT']){
+						msg = msg + '<tr class="table-success">';
+						count_success = count_success + 1;
+					}else{
+						msg = msg + '<tr class="table-danger">';
+					}
+					msg = msg + '<th scope="row">'+i+'</th>';
+					msg = msg + '<td >'+response['T_'+i+'_ANSW']+'</td>';
+					msg = msg + '<td >'+response['T_'+i+'_ANSW_CORRECT']+'</td>';
+					msg = msg + '</tr>';
+				}
+				document.getElementById('RES_TABLE').innerHTML = msg;
+				document.getElementById('PROCENT').innerHTML = String(count_success/count*100).slice(0, 3)+"%";
+
+			},
+			error => alert(`Rejected: ${error}`)
+		);	
+	</script>			
 			
 
   </body>

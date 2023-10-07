@@ -11,12 +11,10 @@
 		table {
 		  width: 100%;
 		}
-
 		tr{
 		  width: 0;
 		  white-space: nowrap;	
 		}
-
     </style>
 	
 	
@@ -24,6 +22,7 @@
   <body>
     <script src="./bootstrap.bundle.min.js"></script>
 	<script src="./conf.js"></script>
+	<script src="./fn.js"></script>
 	
 	<div class="container">
 	  <div class="row border-bottom border-primary py-3">
@@ -163,139 +162,100 @@
 	  </div>
 	</div>	
 	
-			<script>
-				console.log("Начало работы");
-				
-				function read_get_values() {
-					console.log("Чтение GET параметров");
-					var p_url=location.search.substring(1);
-					var parametr=p_url.split("&");				
-					var values= new Array();
-					for(let i=0; i < parametr.length; i++){
-						j=parametr[i].split("="); 
-						values[j[0]]=unescape(j[1]);
-					}
-					console.log(values);
-					return values
-				}
-				var values = read_get_values();
-				var KEY = values["KEY"];
-				var max_len = 20;
-			</script>
+	<script>
+	console.log("Начало работы");
+	
+	var values = read_GET_values();
+	var KEY = values["KEY"];
+	var max_len = 20;
 
 
-			<script>
-				console.log("Инициализация API функции получения количества ответов пользователей используя KEY");	
-
-				async function get_headers() {
-					console.log("get_headers()");
-					let url = new URL(server + "get_headers/");
-					url.searchParams.set('KEY', KEY);				
-					let response = await fetch(url);
-					if (response.ok) { // если HTTP-статус в диапазоне 200-299
-						// получаем тело ответа
-						let json = await response.json();
-						console.log(json);
-						console.log("get_headers() Добавляем на страницу инфо о тестах");
-						// перебор 6 столбцов (формат фильтра: количество)
-						for (let i = 0; i < 6; i++){
-							var msg = ""
-							//вывод столбца (формат фильтра: количество)
-							for (const [key, value] of Object.entries(json[i])) {
-								let keys = key.split('--')
-								let f = ''
-								if (i == 0)
-									f = "get_results('"+keys[0]+"', '%', '%', '%')"
-								if (i == 1)
-									f = "get_results('%', '"+keys[0]+"', '%', '%')"
-								if (i == 2)
-									f = "get_results('%', '"+keys[0]+"', '"+keys[1]+"', '%')"
-								if (i == 3)
-									f = "get_results('%', '"+keys[0]+"', '"+keys[1]+"', '"+keys[2]+"')"
-								if (i == 4)
-									f = "get_results('%', '%', '%', '"+keys[0]+"')"
-								if (i == 5)
-									f = "get_results('"+keys[0]+"', '"+keys[1]+"', '"+keys[2]+"', '"+keys[3]+"')"
-									
-								msg = msg+ '<button class="btn" onclick="'+f+'">'+key+': '+value+'</button><br>'
-							}
-							document.getElementById('C'+i).innerHTML = msg;
-						}
+	get_headers(KEY).then(
+		response => { 
+			// get_headers() Добавляем на страницу инфо о тестах
+			// перебор 6 столбцов (формат фильтра: количество)
+			for (let i = 0; i < 6; i++){
+				let msg = ""
+				//вывод столбца (формат фильтра: количество)
+				for (const [key, value] of Object.entries(response[i])) {
+					let keys = key.split('--')
+					let f = ''
+					if (i == 0)
+						f = "results('"+keys[0]+"', '%', '%', '%')"
+					if (i == 1)
+						f = "results('%', '"+keys[0]+"', '%', '%')"
+					if (i == 2)
+						f = "results('%', '"+keys[0]+"', '"+keys[1]+"', '%')"
+					if (i == 3)
+						f = "results('%', '"+keys[0]+"', '"+keys[1]+"', '"+keys[2]+"')"
+					if (i == 4)
+						f = "results('%', '%', '%', '"+keys[0]+"')"
+					if (i == 5)
+						f = "results('"+keys[0]+"', '"+keys[1]+"', '"+keys[2]+"', '"+keys[3]+"')"
 						
-					} else {
-					  alert("Ошибка HTTP: " + response.status);
-					}
+					msg = msg+ '<button class="btn" onclick="'+f+'">'+key+': '+value+'</button><br>'
 				}
-				
-				get_headers();
-			</script>				
+				document.getElementById('C'+i).innerHTML = msg;
+			}
 
-			<script>
-			
-				console.log("Инициализация API функции получения результатов используя KEY");	
+		},
+		error => alert(`Rejected: ${error}`)
+	);	
 
-				async function get_results(TIME_START, NUM, LETTER, TEST) {
-					console.log("get_results('"+TIME_START+"', '"+NUM+"', '"+LETTER+"', '"+TEST+"')");
+
+	function results(TIME_START, NUM, LETTER, TEST){
+		get_results(KEY, TIME_START, NUM, LETTER, TEST).then(
+			response => { 
+				// get_results() Добавляем на страницу инфо о тесте
+				let msg = ""
+				for (let i = 0; i < response.length; i++){
+					msg = msg + '<tr>';
+					msg = msg + '<th scope="row">' +'<a href="'+'./test.html?UUID=' + response[i]['UUID'] + '">i</a>' + "</th>"
+					msg = msg + "<td>" + response[i]['NUM'] + "</td>"
+					msg = msg + "<td>" + response[i]['LETTER'] + "</td>"
+					msg = msg + "<td>" + String(response[i]['NAME']).slice(0, max_len) + "</td>"
 					
-					let url = new URL(server + "get_results/");
-					url.searchParams.set('KEY', KEY);
-					url.searchParams.set('TIME_START', TIME_START);
-					url.searchParams.set('NUM', NUM);
-					url.searchParams.set('LETTER', LETTER);
-					url.searchParams.set('TEST', TEST);
-					
-					let response = await fetch(url);
-					if (response.ok) { // если HTTP-статус в диапазоне 200-299
-						// получаем тело ответа
-						let json = await response.json();
-						console.log(json);
-						console.log("get_results() Добавляем на страницу инфо о тесте");
-						
-						var msg = ""
-						for (let i = 0; i < json.length; i++){
-							msg = msg + '<tr>';
-							msg = msg + '<th scope="row">' +'<a href="'+'./result.html?UUID=' + json[i]['UUID'] + '">i</a>' + "</th>"
-							msg = msg + "<td>" + json[i]['NUM'] + "</td>"
-							msg = msg + "<td>" + json[i]['LETTER'] + "</td>"
-							msg = msg + "<td>" + String(json[i]['NAME']).slice(0, max_len) + "</td>"
-							
-							let count_success = 0;
-							let answers = ''
-							for (let j = 1; j <= json[i]['COUNT']; j++){
-								if (json[i]['T_'+j+'_ANSW'] == json[i]['T_'+j+'_ANSW_CORRECT']){
-									count_success = count_success + 1;
-									answers = answers + '<td class="table-success">'
-								} else {
-									answers = answers + '<td class="table-danger">'
-								}
-								answers = answers + json[i]['T_'+j+'_ANSW'] + ';' + json[i]['T_'+j+'_ANSW_CORRECT'] + ';' + '</td>'
-							}
-							let score = count_success/json[i]['COUNT']*100;
-							let score_style = ''
-							if (score > 80)
-								score_style = 'table-success'
-							else if (score > 60)
-								score_style = 'table-info'
-							else if (score > 30)
-								score_style = 'table-warning'
-							else
-								score_style = 'table-danger'
-							
-							
-							msg = msg + '<td class="'+score_style+'">' + String(score).slice(0, 3)+"%" + "</td>";
-							msg = msg + "<td>" + String(json[i]['TEST']).slice(0, max_len) + "</td>"
-							msg = msg + "<td>" + String(json[i]['TIME_START']).slice(0, 19) + "</td>"
-							msg = msg + answers;
-
-							msg = msg + '</tr>';
+					let count_success = 0;
+					let answers = ''
+					for (let j = 1; j <= response[i]['COUNT']; j++){
+						if (response[i]['T_'+j+'_ANSW'] == response[i]['T_'+j+'_ANSW_CORRECT']){
+							count_success = count_success + 1;
+							answers = answers + '<td class="table-success">'
+						} else {
+							answers = answers + '<td class="table-danger">'
 						}
-						document.getElementById('DATA').innerHTML = msg;
-					} else {
-					  alert("Ошибка HTTP: " + response.status);
+						answers = answers + response[i]['T_'+j+'_ANSW'] + ';' + response[i]['T_'+j+'_ANSW_CORRECT'] + ';' + '</td>'
 					}
+					let score = count_success/response[i]['COUNT']*100;
+					let score_style = ''
+					if (score > 80)
+						score_style = 'table-success'
+					else if (score > 60)
+						score_style = 'table-info'
+					else if (score > 30)
+						score_style = 'table-warning'
+					else
+						score_style = 'table-danger'
+					
+					
+					msg = msg + '<td class="'+score_style+'">' + String(score).slice(0, 3)+"%" + "</td>";
+					msg = msg + "<td>" + String(response[i]['TEST']).slice(0, max_len) + "</td>"
+					msg = msg + "<td>" + String(response[i]['TIME_START']).slice(0, 19) + "</td>"
+					msg = msg + answers;
+
+					msg = msg + '</tr>';
 				}
+				document.getElementById('DATA').innerHTML = msg;	
+
+			},
+			error => alert(`Rejected: ${error}`)
+		);	
+	}			
+					
+
+						
 				
-			</script>	
+	</script>	
 
   </body>
 </html>

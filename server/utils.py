@@ -150,7 +150,12 @@ def tbl_get_full_test_and_lock(UUID):
             column = column.fetchone()
             if not column:
                 return {"TASK_TEXT": "Error: UUID not found"}
+            #
             test = dict(zip(column_names, column))
+            
+            for TASK in range(1,test["COUNT"]+1):
+                pic = image_to_base64(test[f"T_{TASK}_PIC"]) if test[f"T_{TASK}_PIC"] is not None else None
+                test[f"T_{TASK}_PIC"] = pic
         return test
     except sqlite3.Error as e:
         print(f"Error executing SQL query: {e}")
