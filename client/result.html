@@ -1,68 +1,70 @@
 <!doctype html>
 <html lang="ru">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Таблица результатов</title>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Таблица результатов</title>
 	<link rel="icon" href="data:,">
-    <link href="./bootstrap.min.css" rel="stylesheet">
-  </head>
-  <body>
-    <script src="./bootstrap.bundle.min.js"></script>
+	<link href="./bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+	<script src="./bootstrap.bundle.min.js"></script>
 	<script src="./conf.js"></script>
 	<script src="./fn.js"></script>
-	
+
 	<div class="container">
-	  <div class="row border-bottom border-primary py-3">
-		<div class="col d-grid gap-2 mx-auto">			
-		  <a id="HREF" class="btn btn-outline-primary" href=""></a>	
-		  <a id="HOME" class="btn btn-outline-success" href="./">Перейти к списку тестов</a>
-		  <a id="TOTEST" class="btn btn-outline-success" href="">Вернуться к заданиям</a>		  
+		<div class="row border-bottom border-primary py-3">
+			<div class="col d-grid gap-2 mx-auto">
+				<a id="HREF" class="btn btn-outline-primary" href=""></a>
+				<a id="HOME" class="btn btn-outline-success" href="./">Перейти к списку тестов</a>
+				<a id="TOTEST" class="btn btn-outline-success" href="">Вернуться к заданиям</a>
+			</div>
 		</div>
-	  </div>
-	</div>		
-	
+	</div>
+
 	<div class="container">
-	  <div class="row border-bottom border-primary py-3">
-		<div class="col d-grid gap-2 d-md-block">
-		  <button class="btn border-0" id="TEST"></button>
-		  <button class="btn border-0" id="NAME"></button>
-		  <button class="btn border-0" id="NUM"></button>
-		  <button class="btn border-0" id="LETTER"></button>
-		  <button class="btn border-0" id="TIME_START"></button>
-		  <button class="btn border-0" id="PROCENT"></button>		  
+		<div class="row border-bottom border-primary py-3">
+			<div class="col d-grid gap-2 d-md-block">
+				<button class="btn border-0" id="TEST"></button>
+				<button class="btn border-0" id="NAME"></button>
+				<button class="btn border-0" id="NUM"></button>
+				<button class="btn border-0" id="LETTER"></button>
+				<button class="btn border-0" id="TIME_START"></button>
+				<button class="btn border-0" id="PROCENT"></button>
+			</div>
 		</div>
-	  </div>
-	</div>	
-	
-	
+	</div>
+
+
 	<div class="container">
-	  <div class="row py-3">
-		<div class="col">
-		
-			<table class="table">
-			  <thead>
-				<tr>
-				  <th scope="col">#</th>
-				  <th scope="col">Ваш ответ</th>
-				  <th scope="col">Правильный ответ</th>
-				</tr>
-			  </thead>
-			  <tbody id="RES_TABLE">
-			  
-				<td colspan="3">
-					<div class="text-center">
-					  <span class="spinner-border m-5" role="status">
-						<span class="visually-hidden">Loading...</span>
-					  </span>
-					</div>
-				</td>
-			  
-			  </tbody>
-			</table>	
-		
+		<div class="row py-3">
+			<div class="col">
+
+				<table class="table">
+					<thead>
+						<tr>
+							<th scope="col">#</th>
+							<th scope="col">Ваш ответ</th>
+							<th scope="col">Правильный ответ</th>
+						</tr>
+					</thead>
+					<tbody id="RES_TABLE">
+
+						<td colspan="3">
+							<div class="text-center">
+								<span class="spinner-border m-5" role="status">
+									<span class="visually-hidden">Loading...</span>
+								</span>
+							</div>
+						</td>
+
+					</tbody>
+				</table>
+
+			</div>
 		</div>
-	  </div>
 	</div>
 
 
@@ -73,9 +75,9 @@
 
 
 		get_full_test_and_lock(UUID).then(
-			response => { 
+			response => {
 				// Добавляем на страницу инфо о тесте
-				document.getElementById('HREF').innerHTML = location.href;	
+				document.getElementById('HREF').innerHTML = location.href;
 				document.getElementById('HREF').href = location.href;
 				document.getElementById('TOTEST').href = './test.html?UUID=' + UUID;
 				document.getElementById('TEST').innerHTML = response['TEST'];
@@ -85,28 +87,31 @@
 				document.getElementById('TIME_START').innerHTML = (response['TIME_START'] != null) ? response['TIME_START'].slice(0, 19) : "";
 				var count = response['COUNT'];
 				let count_success = 0;
-				
+
 				var msg = ""
-				for (let i = 1; i <= count; i++){
-					if (response['T_'+i+'_ANSW'] == response['T_'+i+'_ANSW_CORRECT']){
+				for (let i = 1; i <= count; i++) {
+					if (response['T_' + i + '_ANSW'] == response['T_' + i + '_ANSW_CORRECT']) {
 						msg = msg + '<tr class="table-success">';
 						count_success = count_success + 1;
-					}else{
+					} else if (response['T_' + i + '_ANSW_CORRECT'] == "") {
+						msg = msg + '<tr class="table-warning">';
+					} else {
 						msg = msg + '<tr class="table-danger">';
 					}
-					msg = msg + '<th scope="row">'+i+'</th>';
-					msg = msg + '<td >'+response['T_'+i+'_ANSW']+'</td>';
-					msg = msg + '<td >'+response['T_'+i+'_ANSW_CORRECT']+'</td>';
+					msg = msg + '<th scope="row">' + i + '</th>';
+					msg = msg + '<td >' + response['T_' + i + '_ANSW'] + '</td>';
+					msg = msg + '<td >' + response['T_' + i + '_ANSW_CORRECT'] + '</td>';
 					msg = msg + '</tr>';
 				}
 				document.getElementById('RES_TABLE').innerHTML = msg;
-				document.getElementById('PROCENT').innerHTML = String(count_success/count*100).slice(0, 3)+"%";
+				document.getElementById('PROCENT').innerHTML = String(count_success / count * 100).slice(0, 3) + "%";
 
 			},
 			error => alert(`Rejected: ${error}`)
 		);	
-	</script>			
-			
+	</script>
 
-  </body>
+
+</body>
+
 </html>

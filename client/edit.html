@@ -1,228 +1,233 @@
 <!doctype html>
 <html lang="ru">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Конструктор тестов</title>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Конструктор тестов</title>
 	<link rel="icon" href="data:,">
-    <link href="./bootstrap.min.css" rel="stylesheet">
+	<link href="./bootstrap.min.css" rel="stylesheet">
 	<link rel="stylesheet" href="./codemirror/codemirror.css">
 
-	
-  </head>
-  <body>
-    <script src="./bootstrap.bundle.min.js"></script>
+
+</head>
+
+<body>
+	<script src="./bootstrap.bundle.min.js"></script>
 	<script src="./conf.js"></script>
-	
-  
-  <script src="./codemirror/codemirror.js"></script>
-  <script src="./codemirror/mode/python/python.js"></script>
-  <script src="./codemirror/addon/edit/matchbrackets.js"></script>
 
-		
-	
-	
+
+	<script src="./codemirror/codemirror.js"></script>
+	<script src="./codemirror/mode/python/python.js"></script>
+	<script src="./codemirror/addon/edit/matchbrackets.js"></script>
+
+
+
+
 	<div class="container">
-	  <div class="row border-bottom border-primary py-3">
+		<div class="row border-bottom border-primary py-3">
 
-		<div class="col-12 btn-group-vertical" role="group" id='TEST_LIST'>
-			<!-- Тут список тестов для выбора +1 -->
-				
-			<div class="text-center">
-			  <div class="spinner-border m-5" role="status">
-				<span class="visually-hidden">Loading...</span>
-			  </div>
+			<div class="col-12 btn-group-vertical" role="group" id='TEST_LIST'>
+				<!-- Тут список тестов для выбора +1 -->
+
+				<div class="text-center">
+					<div class="spinner-border m-5" role="status">
+						<span class="visually-hidden">Loading...</span>
+					</div>
+				</div>
+
 			</div>
-				
-		</div>	
 
-	  </div>
-	</div>	
-	
-	
+		</div>
+	</div>
+
+
 	<div class="container">
-	  <div class="row border-bottom border-primary py-3">
+		<div class="row border-bottom border-primary py-3">
 
 			<div><textarea id="CODE" name="code" rows="100" cols="10" style="overflow-y: hidden;"></textarea></div>
-			
-		  <script>
-				  var editor = CodeMirror.fromTextArea(document.getElementById("CODE"), {
-					mode: {name: "python",
-						   version: 3,
-						   singleLineStringErrors: false},
+
+			<script>
+				var editor = CodeMirror.fromTextArea(document.getElementById("CODE"), {
+					mode: {
+						name: "python",
+						version: 3,
+						singleLineStringErrors: false
+					},
 					lineNumbers: true,
 					indentUnit: 4,
 					matchBrackets: true,
 					lineWrapping: true,
 				});
 				editor.setSize("100%", "100%");
-		  </script>
-		
+			</script>
 
-	  </div>
-	</div>	
-	
-	
-	<div class="container">
-	  <div class="row border-bottom border-primary py-3">
-		<div class="col d-grid gap-2 d-md-block">
-		  <input type="text" class="btn border-1" id="TEST" placeholder="Filename" aria-label="Filename" aria-describedby="basic-addon1">
-		  <button type="submit" class="btn btn-outline-primary text-start" onClick="save_test_py();">save</button>
-		  <button type="submit" class="btn btn-outline-primary text-start" onClick="run_test_py();">run</button>
-		  <button type="submit" class="btn btn-outline-primary text-start" onClick="del_test_py();">del</button>
-		</div>
-	  </div>
-	</div>	
-	
-	
-	
-	
-	<div class="container">
-	  <div class="row py-3">
-		<!-- Тут демка теста -->
 
-	  
-		<div class="col" id='TASK_TEXT'>
-
-			<div class="text-center">
-			  <div class="spinner-border m-5" role="status">
-				<span class="visually-hidden">Loading...</span>
-			  </div>
-			</div>
-		
 		</div>
-		
-		
-		<div class="col-4 border-start border-primary">
-			<form onsubmit="return false;">
-			  <div class="mb-3">
-				<label for="ANSW" class="form-label">Ответ:</label>
-				<input type="text" class="form-control" id="ANSW" autocomplete="off">
-			  </div>
-			  <div class="col d-grid gap-2 d-md-block">
-			    <button class="btn btn-primary" onClick="set_answ();">Сохранить</button>
-			    <button class="btn btn-outline-success" id="ANSW_TIME" disabled></button>
-			  </div>
-			</form>
-		</div>
-	  </div>
 	</div>
 
 
-			<script>
-			
-				// Инициализация API функции получения списка тестов
-				async function get_test_list() {
-				let url = new URL(server + "test_list/")
-					let response = await fetch(url);
-					if (response.ok) { // если HTTP-статус в диапазоне 200-299
-					  // получаем тело ответа
-					  let json = await response.json();
-					  console.log(url.href,'\n', decodeURI(url.href),'\n', json);
-					  return json;
-					} else {
-					  console.log(url.href,'\n', decodeURI(url.href),'\n', "Ошибка HTTP: " + response.status);
-					  alert("Ошибка HTTP: " + response.status); 
-					}
-				}
+	<div class="container">
+		<div class="row border-bottom border-primary py-3">
+			<div class="col d-grid gap-2 d-md-block">
+				<input type="text" class="btn border-1" id="TEST" placeholder="Filename" aria-label="Filename"
+					aria-describedby="basic-addon1">
+				<button type="submit" class="btn btn-outline-primary text-start" onClick="save_test_py();">save</button>
+				<button type="submit" class="btn btn-outline-primary text-start" onClick="run_test_py();">run</button>
+				<button type="submit" class="btn btn-outline-primary text-start" onClick="del_test_py();">del</button>
+			</div>
+		</div>
+	</div>
 
-				// Запрос списка тестов у сервера
-				get_test_list().then(
-					response => {
-						let msg = ""
-						for (let key in response){
-							msg = msg + '<button type="submit" class="btn btn-outline-primary text-start" onClick="get_test_py('+ "'" + response[key] + "'" + ');">'+response[key]+'</button>'
-						}
-						msg = msg + '<button type="submit" class="btn btn-outline-primary text-start" onClick="add_test_py();">+</button>'
-						document.getElementById('TEST_LIST').innerHTML = msg;
-						
-					},
-					error => alert(`Rejected: ${error}`)
-				  );
-				
-				function read_get_values() {
-					console.log("Чтение GET параметров");
-					let p_url=location.search.substring(1);
-					let parametr=p_url.split("&");				
-					let values= new Array();
-					for(let i=0; i < parametr.length; i++){
-						j=parametr[i].split("="); 
-						values[j[0]]=unescape(j[1]);
-					}
-					console.log(values);
-					return values
-				}
-				
-				var values = read_get_values();
-				var KEY = values["KEY"];
-				
 
-				// Инициализация API функции получения инфо и текста задания python файла	
-				async function get_test_py(test) {
-					let url = new URL(server + "get_test_py/");
-					url.searchParams.set('KEY', KEY);
-					url.searchParams.set('TEST', test);					
-					let response = await fetch(url);
-					if (response.ok) { // если HTTP-статус в диапазоне 200-299
-					  // получаем тело ответа
-					  let file_content = await response.text();				  
-					  console.log(url.href,'\n', decodeURI(url.href),'\n', file_content);
-					  // Добавляем на страницу инфо о тесте
-						editor.setValue(eval(file_content));
-						document.getElementById('TEST').value = test;
-					} else {
-					  console.log(url.href,'\n', decodeURI(url.href),'\n', "Ошибка HTTP: " + response.status);
-					  alert("Ошибка HTTP: " + response.status);
-					}
-				}
 
-				// Инициализация API функции сохранения инфо и текста задания python файла	
-				async function save_test_py() {
-					let url = new URL(server + "save_test_py/");
-					url.searchParams.set('KEY', KEY);
-					url.searchParams.set('TEST', document.getElementById('TEST').value);
-					url.searchParams.set('CODE', encodeURIComponent(editor.getValue()));					
-					let response = await fetch(url);
-					if (response.ok) { // если HTTP-статус в диапазоне 200-299
-					  // получаем тело ответа
-					  let json = await response.json();				  
-					  console.log(url.href,'\n', decodeURI(url.href),'\n', json);
-					  return json;
-					} else {
-					  console.log(url.href,'\n', decodeURI(url.href),'\n', "Ошибка HTTP: " + response.status);
-					  alert("Ошибка HTTP: " + response.status);
-					}
-				}
-				
-			</script>			
-			
-			<script>
-				// Инициализация API функции отправки ответа по нажатию кнопки set_answ() используя ANSW по адр set_answ
-				async function set_answ()
-				{
-					console.log("set_answ()");	
-						let answ = document.getElementById('ANSW').value
-					let url = new URL(server + "set_answ/");
-					url.searchParams.set('UUID', UUID);
-					url.searchParams.set('task', task);	
-					url.searchParams.set('answ', answ);
-					let response = await fetch(url);
-					if (response.ok) { // если HTTP-статус в диапазоне 200-299
-					  // получаем тело ответа
-					  let json = await response.json();
-					  console.log(url.href,'\n', decodeURI(url.href),'\n', json);
-					  document.getElementById('ANSW_TIME').innerHTML = (json['ANSW_TIME'] != null) ? json['ANSW_TIME'].slice(0, 19) : "";
-					  if (task < count){
-						set_task(task+1);
-					  }
-					  get_test();
-					} else {
-					  console.log(url.href,'\n', decodeURI(url.href),'\n', "Ошибка HTTP: " + response.status);
-					  alert("Ошибка HTTP: " + response.status);
-					}
-				}
 
-			</script>
+	<div class="container">
+		<div class="row py-3">
+			<!-- Тут демка теста -->
 
-  </body>
+
+			<div class="col" id='TASK_TEXT'>
+
+				<div class="text-center">
+					<div class="spinner-border m-5" role="status">
+						<span class="visually-hidden">Loading...</span>
+					</div>
+				</div>
+
+			</div>
+
+
+			<div class="col-4 border-start border-primary">
+				<form onsubmit="return false;">
+					<div class="mb-3">
+						<label for="ANSW" class="form-label">Ответ:</label>
+						<input type="text" class="form-control" id="ANSW" autocomplete="off">
+					</div>
+					<div class="col d-grid gap-2 d-md-block">
+						<button class="btn btn-primary" onClick="set_answ();">Сохранить</button>
+						<button class="btn btn-outline-success" id="ANSW_TIME" disabled></button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+
+	<script>
+
+		// Инициализация API функции получения списка тестов
+		async function get_test_list() {
+			let url = new URL(server + "test_list/")
+			let response = await fetch(url);
+			if (response.ok) { // если HTTP-статус в диапазоне 200-299
+				// получаем тело ответа
+				let json = await response.json();
+				console.log(url.href, '\n', decodeURI(url.href), '\n', json);
+				return json;
+			} else {
+				console.log(url.href, '\n', decodeURI(url.href), '\n', "Ошибка HTTP: " + response.status);
+				alert("Ошибка HTTP: " + response.status);
+			}
+		}
+
+		// Запрос списка тестов у сервера
+		get_test_list().then(
+			response => {
+				let msg = ""
+				for (let key in response) {
+					msg = msg + '<button type="submit" class="btn btn-outline-primary text-start" onClick="get_test_py(' + "'" + response[key] + "'" + ');">' + response[key] + '</button>'
+				}
+				msg = msg + '<button type="submit" class="btn btn-outline-primary text-start" onClick="add_test_py();">+</button>'
+				document.getElementById('TEST_LIST').innerHTML = msg;
+
+			},
+			error => alert(`Rejected: ${error}`)
+		);
+
+		function read_get_values() {
+			console.log("Чтение GET параметров");
+			let p_url = location.search.substring(1);
+			let parametr = p_url.split("&");
+			let values = new Array();
+			for (let i = 0; i < parametr.length; i++) {
+				j = parametr[i].split("=");
+				values[j[0]] = unescape(j[1]);
+			}
+			console.log(values);
+			return values
+		}
+
+		var values = read_get_values();
+		var KEY = values["KEY"];
+
+
+		// Инициализация API функции получения инфо и текста задания python файла	
+		async function get_test_py(test) {
+			let url = new URL(server + "get_test_py/");
+			url.searchParams.set('KEY', KEY);
+			url.searchParams.set('TEST', test);
+			let response = await fetch(url);
+			if (response.ok) { // если HTTP-статус в диапазоне 200-299
+				// получаем тело ответа
+				let file_content = await response.text();
+				console.log(url.href, '\n', decodeURI(url.href), '\n', file_content);
+				// Добавляем на страницу инфо о тесте
+				editor.setValue(eval(file_content));
+				document.getElementById('TEST').value = test;
+			} else {
+				console.log(url.href, '\n', decodeURI(url.href), '\n', "Ошибка HTTP: " + response.status);
+				alert("Ошибка HTTP: " + response.status);
+			}
+		}
+
+		// Инициализация API функции сохранения инфо и текста задания python файла	
+		async function save_test_py() {
+			let url = new URL(server + "save_test_py/");
+			url.searchParams.set('KEY', KEY);
+			url.searchParams.set('TEST', document.getElementById('TEST').value);
+			url.searchParams.set('CODE', encodeURIComponent(editor.getValue()));
+			let response = await fetch(url);
+			if (response.ok) { // если HTTP-статус в диапазоне 200-299
+				// получаем тело ответа
+				let json = await response.json();
+				console.log(url.href, '\n', decodeURI(url.href), '\n', json);
+				return json;
+			} else {
+				console.log(url.href, '\n', decodeURI(url.href), '\n', "Ошибка HTTP: " + response.status);
+				alert("Ошибка HTTP: " + response.status);
+			}
+		}
+
+	</script>
+
+	<script>
+		// Инициализация API функции отправки ответа по нажатию кнопки set_answ() используя ANSW по адр set_answ
+		async function set_answ() {
+			console.log("set_answ()");
+			let answ = document.getElementById('ANSW').value
+			let url = new URL(server + "set_answ/");
+			url.searchParams.set('UUID', UUID);
+			url.searchParams.set('task', task);
+			url.searchParams.set('answ', answ);
+			let response = await fetch(url);
+			if (response.ok) { // если HTTP-статус в диапазоне 200-299
+				// получаем тело ответа
+				let json = await response.json();
+				console.log(url.href, '\n', decodeURI(url.href), '\n', json);
+				document.getElementById('ANSW_TIME').innerHTML = (json['ANSW_TIME'] != null) ? json['ANSW_TIME'].slice(0, 19) : "";
+				if (task < count) {
+					set_task(task + 1);
+				}
+				get_test();
+			} else {
+				console.log(url.href, '\n', decodeURI(url.href), '\n', "Ошибка HTTP: " + response.status);
+				alert("Ошибка HTTP: " + response.status);
+			}
+		}
+
+	</script>
+
+</body>
+
 </html>

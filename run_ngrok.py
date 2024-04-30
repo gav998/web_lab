@@ -7,31 +7,51 @@ from sys import platform
 
 
 def start_tunnels():
-    print("start_tunnels")
+    # Функция для запуска туннелей с помощью ngrok
+
+    print("start_tunnels")  # Вывод сообщения о начале работы функции
+    
+    # Определение операционной системы пользователя и запуск соответствующей команды
     if "win" in platform:
+        # Если операционная система - Windows, запускаем ngrok с использованием команды 'start'
         proc = subprocess.Popen("start ngrok http 9090", shell=True)
     else:
+        # Для других ОС (например, Linux) используем lxterminal для запуска ngrok
         proc = subprocess.Popen("lxterminal -e ngrok http 9090", shell=True)
-    time.sleep(5)
-    return proc
+
+    time.sleep(5)  # Ожидаем 5 секунд для установления соединения с ngrok
+    
+    return proc  # Возвращаем объект процесса, чтобы иметь возможность управлять им в дальнейшем
+
 
 def get_public_url():
-    print("get_public_url")
+    # Функция для получения публичного URL из tunnels.json, который создается ngrok
+
+    print("get_public_url")  # Вывод сообщения о начале работы функции
+    
+    # Получение данных о туннелях с помощью утилиты curl и сохранение их в файл tunnels.json
     os.system("curl http://localhost:4040/api/tunnels > ./tunnels.json")
     
-
+    # Открытие файла tunnels.json для чтения
     with open('./tunnels.json', 'rt') as data_file:
-        j = data_file.read()
-    if len(j)==0:
-        print('tunnels.json empty')
-        return False
-    j = json.loads(j)
-    if 'tunnels' in j and len(j['tunnels'])>0 and 'public_url' in j['tunnels'][0]:
-        print('tunnels.json OK')
-        return j['tunnels'][0]['public_url']+'/'
+        j = data_file.read()  # Чтение содержимого файла
+
+    # Проверка на пустоту содержимого файла
+    if len(j) == 0:
+        print('tunnels.json empty')  # Сообщение пользователю о пустом файле
+        return False  # Возврат False, если файл пустой
+
+    j = json.loads(j)  # Конвертация строки с JSON-данными в Python словарь или список
+    
+    # Проверка наличия информации о туннелях и возврат публичного URL, если он существует
+    if 'tunnels' in j and len(j['tunnels']) > 0 and 'public_url' in j['tunnels'][0]:
+        print('tunnels.json OK')  # Сообщение о наличии необходимых данных
+        return j['tunnels'][0]['public_url'] + '/'  # Возврат публичного URL с добавлением слэша
+
     else:
-        print('tunnels.json unknown')
-        return False
+        print('tunnels.json unknown')  # Сообщение пользователю о непредвиденной структуре файла
+        return False  # Возврат False, если нужные данные не найдены
+
 
 
 '''
@@ -45,14 +65,26 @@ def start_serv():
 '''
 
 def restart_tunnels():
-    print("restart_tunnels")
+    # Функция для перезапуска туннелей и обновления конфигурации с новым публичным URL
+
+    print("restart_tunnels")  # Вывод сообщения о начале процесса перезапуска туннелей
+    
+    # Использование глобальной переменной proc, которая предположительно является процессом туннеля
     global proc
-    proc.terminate()
-    time.sleep(5)
+    proc.terminate()  # Завершение работы текущего процесса
+    time.sleep(5)  # Ожидание в течение 5 секунд перед запуском нового процесса
+    
+    # Запуск новых туннелей и присваивание нового процесса глобальной переменной proc
     proc = start_tunnels()
+    
+    # Получение нового публичного URL с помощью функции get_public_url
     public_url = get_public_url()
+    
+    # Обновление конфигурации (файла настроек клиента) с новым публичным URL
     update_conf(public_url)
-    time.sleep(15)
+    
+    time.sleep(15)  # Ожидание в течение 15 секунд для устойчивости работы системы
+
 
 
 def update_conf(public_url):

@@ -1,117 +1,117 @@
 <!doctype html>
 <html lang="ru">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Список тестов</title>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Список тестов</title>
 	<link rel="icon" href="data:,">
-    <link href="./bootstrap.min.css" rel="stylesheet">
-  </head>
-  <body>
-    <script src="./bootstrap.bundle.min.js"></script>
+	<link href="./bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+	<script src="./bootstrap.bundle.min.js"></script>
 	<script src="./conf.js"></script>
 	<script src="./fn.js"></script>
-	
-	
-	
-	
+
 	<div class="container">
-	  <div class="row">
+		<div class="row">
 
-		<div class="col">
-		
-			<form class="row g-3" onsubmit="return false;" name="my">
-			  <div class="col-6">
-				<label for="inputName" class="form-label">Фамилия</label>
-				<input type="text" class="form-control" name="inputName" value="" autocomplete="off" required>
-			  </div>
-			  <div class="col-3">
-				<label for="inputNum" class="form-label">Класс</label>
-				<select class="form-select" name="inputNum" required>
-				  <option selected disabled value="">Choose...</option>
-				  <option>7</option>
-				  <option>8</option>
-				  <option>9</option>
-				  <option>10</option>
-				  <option>11</option>				  
-				</select>
-			  </div>
-			  <div class="col-3">
-				<label for="inputLetter" class="form-label">Буква</label>
-				<select class="form-select" name="inputLetter" required>
-				  <option selected disabled value="">Choose...</option>
-				  <option>А</option>
-				  <option>Б</option>
-				  <option>В</option>
-				  <option>Г</option>
-				  <option>Д</option>
-				  <option>Е</option>
-				  <option>Ж</option>
-				  <option>З</option>
-				  <option>И</option>
-				  <option>К</option>
-				  <option>Л</option>
-				</select>
-			  </div>
-			  
-			  <div class="col-12 btn-group-vertical" role="group" id='TEST_LIST'>
-						
-				
-				<div class="text-center">
-				  <div class="spinner-border m-5" role="status">
-					<span class="visually-hidden">Loading...</span>
-				  </div>
-				</div>
-				
-			  </div>
-			</form>
-		
+			<div class="col">
+
+				<form class="row g-3" onsubmit="return false;" name="my">
+					<div class="col-6">
+						<label for="inputName"  class="form-label">Фамилия</label>
+						<input type="text" pattern="[А-Яа-яЁё\s,\.]+" style="text-transform: capitalize;" class="form-control" name="inputName" value="" autocomplete="off" required>
+					</div>
+					<div class="col-3">
+						<label for="inputNum" class="form-label">Класс</label>
+						<select class="form-select" name="inputNum" required>
+							<option selected disabled value="">Choose...</option>
+							<option>7</option>
+							<option>8</option>
+							<option>9</option>
+							<option>10</option>
+							<option>11</option>
+						</select>
+					</div>
+					<div class="col-3">
+						<label for="inputLetter" class="form-label">Буква</label>
+						<select class="form-select" name="inputLetter" required>
+							<option selected disabled value="">Choose...</option>
+							<option>А</option>
+							<option>Б</option>
+							<option>В</option>
+							<option>Г</option>
+							<option>Д</option>
+							<option>Е</option>
+							<option>Ж</option>
+							<option>З</option>
+							<option>И</option>
+							<option>К</option>
+							<option>Л</option>
+						</select>
+					</div>
+
+					<div class="col-12 btn-group-vertical" role="group" id='TEST_LIST'>
+
+
+						<div class="text-center">
+							<div class="spinner-border m-5" role="status">
+								<span class="visually-hidden">Loading...</span>
+							</div>
+						</div>
+
+					</div>
+				</form>
+
+			</div>
+
 		</div>
-
-	  </div>
 	</div>
 
 
 	<script>
-		
 
-// Запрос списка тестов у сервера
-get_test_list().then(
-	response => {
-		let msg = ""
-		for (let key in response){
-			msg = msg + '<button type="submit" class="btn btn-outline-primary text-start" onClick="redirect('+ "'" + response[key] + "'" + ');">'+response[key]+'</button>'
+
+		// Запрос списка тестов у сервера
+		get_test_list().then(
+			response => {
+				let msg = ""
+				for (let key in response) {
+					msg = msg + '<button type="submit" class="btn btn-outline-primary text-start" onClick="redirect(' + "'" + response[key] + "'" + ');">' + response[key] + '</button>'
+				}
+				document.getElementById('TEST_LIST').innerHTML = msg;
+
+			},
+			error => alert(`Rejected: ${error}`)
+		);
+
+
+		function redirect(test) {
+			let form = document.forms.my;
+			let name = form.elements.inputName.value;
+			let num = form.elements.inputNum.value;
+			let letter = form.elements.inputLetter.value;
+
+			if (letter == false || num == false || name == false) {
+				return false;
+			}
+
+			document.getElementById('TEST_LIST').innerHTML = '<div class="text-center"><div class="spinner-border m-5" role="status"><span class="visually-hidden">Loading...</span></div></div>';
+
+			send_choice_and_get_uuid(test, name, num, letter).then(
+				response => {
+					document.location.href = './test.html?UUID=' + response['UUID'];
+				},
+				error => alert(`Rejected: ${error}`)
+			);
 		}
-		document.getElementById('TEST_LIST').innerHTML = msg;
-		
-	},
-	error => alert(`Rejected: ${error}`)
-  );
-	
-	
-function redirect(test){
-	let form = document.forms.my; 
-	let name = form.elements.inputName.value;
-	let num = form.elements.inputNum.value;
-	let letter = form.elements.inputLetter.value;
 
-	if (letter == false || num == false || name == false) {
-		return false;
-	}
-
-	document.getElementById('TEST_LIST').innerHTML = '<div class="text-center"><div class="spinner-border m-5" role="status"><span class="visually-hidden">Loading...</span></div></div>';
-
-	send_choice_and_get_uuid(test, name, num, letter).then(
-		response => {
-			document.location.href = './test.html?UUID='+response['UUID'];	
-		},
-		error => alert(`Rejected: ${error}`)
-	);
-}	
-			
 
 	</script>
-			
-	
-  </body>
+
+
+</body>
+
 </html>

@@ -1,265 +1,265 @@
 <!doctype html>
 <html lang="ru">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Страница для проверки работ</title>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Страница для проверки работ</title>
 	<link rel="icon" href="data:,">
-    <link href="./bootstrap.min.css" rel="stylesheet">
-	
+	<link href="./bootstrap.min.css" rel="stylesheet">
+
 	<style type="text/css">
 		table {
-		  width: 100%;
+			width: 100%;
 		}
-		tr{
-		  width: 0;
-		  white-space: nowrap;	
+
+		tr {
+			width: 0;
+			white-space: nowrap;
 		}
-    </style>
-	
-	
-  </head>
-  <body>
-    <script src="./bootstrap.bundle.min.js"></script>
+	</style>
+
+
+</head>
+
+<body>
+	<script src="./bootstrap.bundle.min.js"></script>
 	<script src="./conf.js"></script>
 	<script src="./fn.js"></script>
-	
+
 	<div class="container">
-	  <div class="row border-bottom border-primary py-3">
-		<div class="col d-grid gap-2 mx-auto">
-		  <a id="HOME" class="btn btn-outline-success" href="./">Перейти к списку тестов</a>
+		<div class="row border-bottom border-primary py-3">
+			<div class="col d-grid gap-2 mx-auto">
+				<a id="HOME" class="btn btn-outline-success" href="./">Перейти к списку тестов</a>
+			</div>
 		</div>
-	  </div>
-	</div>	
-	
+	</div>
+
 	<div class="container">
-	  <div class="row py-3">
-		<div class="col">
-			<table class="table table-bordered">
-			  <tbody id="DATA" class="font-monospace">
-			  		  
-				<td colspan="3">
-					<div class="text-center">
-					  <span class="spinner-border m-5" role="status">
-						<span class="visually-hidden">Loading...</span>
-					  </span>
-					</div>
-				</td>
-			  
-			  </tbody>
-			</table>	
+		<div class="row py-3">
+			<div class="col">
+				<table class="table table-bordered">
+					<tbody id="DATA" class="font-monospace">
+
+						<td colspan="3">
+							<div class="text-center">
+								<span class="spinner-border m-5" role="status">
+									<span class="visually-hidden">Loading...</span>
+								</span>
+							</div>
+						</td>
+
+					</tbody>
+				</table>
+			</div>
 		</div>
-	  </div>
 	</div>
 
 	<div class="container-fluid">
-	  <div class="row">
-		<div class="col-md-auto">
-			<div class="d-grid gap-2">
-				<button class="btn" disabled>Дата</button>
+		<div class="row">
+			<div class="col-md-auto">
+				<div class="d-grid gap-2">
+					<button class="btn" disabled>Дата</button>
+				</div>
+				<div id="C0">
+
+					<td colspan="3">
+						<div class="text-center">
+							<span class="spinner-border m-5" role="status">
+								<span class="visually-hidden">Loading...</span>
+							</span>
+						</div>
+					</td>
+
+				</div>
 			</div>
-			<div id="C0">
-			
-		  		<td colspan="3">
-					<div class="text-center">
-					  <span class="spinner-border m-5" role="status">
-						<span class="visually-hidden">Loading...</span>
-					  </span>
-					</div>
-				</td>
-				
+
+			<div class="col-md-auto">
+				<div class="d-grid gap-2">
+					<button class="btn" disabled>№</button>
+				</div>
+				<div id="C1">
+
+					<td colspan="3">
+						<div class="text-center">
+							<span class="spinner-border m-5" role="status">
+								<span class="visually-hidden">Loading...</span>
+							</span>
+						</div>
+					</td>
+
+				</div>
 			</div>
+
+			<div class="col-md-auto">
+				<div class="d-grid gap-2">
+					<button class="btn" disabled>№--Б</button>
+				</div>
+				<div id="C2">
+
+					<td colspan="3">
+						<div class="text-center">
+							<span class="spinner-border m-5" role="status">
+								<span class="visually-hidden">Loading...</span>
+							</span>
+						</div>
+					</td>
+
+				</div>
+			</div>
+
+			<div class="col-md-auto">
+				<div class="d-grid gap-2">
+					<button class="btn" disabled>№--Б--Тест</button>
+				</div>
+				<div id="C3">
+
+					<td colspan="3">
+						<div class="text-center">
+							<span class="spinner-border m-5" role="status">
+								<span class="visually-hidden">Loading...</span>
+							</span>
+						</div>
+					</td>
+
+				</div>
+			</div>
+
+			<div class="col-md-auto">
+				<div class="d-grid gap-2">
+					<button class="btn" disabled>Тест</button>
+				</div>
+				<div id="C4">
+
+					<td colspan="3">
+						<div class="text-center">
+							<span class="spinner-border m-5" role="status">
+								<span class="visually-hidden">Loading...</span>
+							</span>
+						</div>
+					</td>
+
+				</div>
+			</div>
+
+			<div class="col-md-auto">
+				<div class="d-grid gap-2">
+					<button class="btn" disabled>Дата--№--Б--Тест</button>
+				</div>
+				<div id="C5">
+
+					<td colspan="3">
+						<div class="text-center">
+							<span class="spinner-border m-5" role="status">
+								<span class="visually-hidden">Loading...</span>
+							</span>
+						</div>
+					</td>
+
+				</div>
+			</div>
+
+
+
+
 		</div>
-		
-		<div class="col-md-auto">
-			<div class="d-grid gap-2">
-				<button class="btn" disabled>№</button>
-			</div>
-			<div id="C1">
-			
-		  		<td colspan="3">
-					<div class="text-center">
-					  <span class="spinner-border m-5" role="status">
-						<span class="visually-hidden">Loading...</span>
-					  </span>
-					</div>
-				</td>
-				
-			</div>
-		</div>
-		
-		<div class="col-md-auto">
-			<div class="d-grid gap-2">
-				<button class="btn" disabled>№--Б</button>
-			</div>
-			<div id="C2">
-			
-		  		<td colspan="3">
-					<div class="text-center">
-					  <span class="spinner-border m-5" role="status">
-						<span class="visually-hidden">Loading...</span>
-					  </span>
-					</div>
-				</td>
-				
-			</div>
-		</div>		
+	</div>
 
-		<div class="col-md-auto">
-			<div class="d-grid gap-2">
-				<button class="btn" disabled>№--Б--Тест</button>
-			</div>
-			<div id="C3">
-			
-		  		<td colspan="3">
-					<div class="text-center">
-					  <span class="spinner-border m-5" role="status">
-						<span class="visually-hidden">Loading...</span>
-					  </span>
-					</div>
-				</td>
-				
-			</div>
-		</div>		
-
-		<div class="col-md-auto">
-			<div class="d-grid gap-2">
-				<button class="btn" disabled>Тест</button>
-			</div>
-			<div id="C4">
-			
-		  		<td colspan="3">
-					<div class="text-center">
-					  <span class="spinner-border m-5" role="status">
-						<span class="visually-hidden">Loading...</span>
-					  </span>
-					</div>
-				</td>
-				
-			</div>
-		</div>
-
-		<div class="col-md-auto">
-			<div class="d-grid gap-2">
-				<button class="btn" disabled>Дата--№--Б--Тест</button>
-			</div>
-			<div id="C5">
-			
-		  		<td colspan="3">
-					<div class="text-center">
-					  <span class="spinner-border m-5" role="status">
-						<span class="visually-hidden">Loading...</span>
-					  </span>
-					</div>
-				</td>
-				
-			</div>
-		</div>
-
-
-
-		
-	  </div>
-	</div>	
-	
 	<script>
-	console.log("Начало работы");
-	
-	var values = read_GET_values();
-	var KEY = values["KEY"];
-	var max_len = 20;
+		console.log("Начало работы");
+
+		var values = read_GET_values();
+		var KEY = values["KEY"];
+		var max_len = 20;
 
 
-	get_headers(KEY).then(
-		response => { 
-			// get_headers() Добавляем на страницу инфо о тестах
-			// перебор 6 столбцов (формат фильтра: количество)
-			for (let i = 0; i < 6; i++){
-				let msg = ""
-				//вывод столбца (формат фильтра: количество)
-				for (const [key, value] of Object.entries(response[i])) {
-					let keys = key.split('--')
-					let f = ''
-					if (i == 0)
-						f = "results('"+keys[0]+"', '%', '%', '%')"
-					if (i == 1)
-						f = "results('%', '"+keys[0]+"', '%', '%')"
-					if (i == 2)
-						f = "results('%', '"+keys[0]+"', '"+keys[1]+"', '%')"
-					if (i == 3)
-						f = "results('%', '"+keys[0]+"', '"+keys[1]+"', '"+keys[2]+"')"
-					if (i == 4)
-						f = "results('%', '%', '%', '"+keys[0]+"')"
-					if (i == 5)
-						f = "results('"+keys[0]+"', '"+keys[1]+"', '"+keys[2]+"', '"+keys[3]+"')"
-						
-					msg = msg+ '<button class="btn" onclick="'+f+'">'+key+': '+value+'</button><br>'
-				}
-				document.getElementById('C'+i).innerHTML = msg;
-			}
+		get_headers(KEY).then(
+			response => {
+				// get_headers() Добавляем на страницу инфо о тестах
+				// перебор 6 столбцов (формат фильтра: количество)
+				for (let i = 0; i < 6; i++) {
+					let msg = ""
+					//вывод столбца (формат фильтра: количество)
+					for (const [key, value] of Object.entries(response[i])) {
+						let keys = key.split('--')
+						let f = ''
+						if (i == 0)
+							f = "results('" + keys[0] + "', '%', '%', '%')"
+						if (i == 1)
+							f = "results('%', '" + keys[0] + "', '%', '%')"
+						if (i == 2)
+							f = "results('%', '" + keys[0] + "', '" + keys[1] + "', '%')"
+						if (i == 3)
+							f = "results('%', '" + keys[0] + "', '" + keys[1] + "', '" + keys[2] + "')"
+						if (i == 4)
+							f = "results('%', '%', '%', '" + keys[0] + "')"
+						if (i == 5)
+							f = "results('" + keys[0] + "', '" + keys[1] + "', '" + keys[2] + "', '" + keys[3] + "')"
 
-		},
-		error => alert(`Rejected: ${error}`)
-	);	
-
-
-	function results(TIME_START, NUM, LETTER, TEST){
-		get_results(KEY, TIME_START, NUM, LETTER, TEST).then(
-			response => { 
-				// get_results() Добавляем на страницу инфо о тесте
-				let msg = ""
-				for (let i = 0; i < response.length; i++){
-					msg = msg + '<tr>';
-					msg = msg + '<th scope="row">' +'<a href="'+'./test.html?UUID=' + response[i]['UUID'] + '">i</a>' + "</th>"
-					msg = msg + "<td>" + response[i]['NUM'] + "</td>"
-					msg = msg + "<td>" + response[i]['LETTER'] + "</td>"
-					msg = msg + "<td>" + String(response[i]['NAME']).slice(0, max_len) + "</td>"
-					
-					let count_success = 0;
-					let answers = ''
-					for (let j = 1; j <= response[i]['COUNT']; j++){
-						if (response[i]['T_'+j+'_ANSW'] == response[i]['T_'+j+'_ANSW_CORRECT']){
-							count_success = count_success + 1;
-							answers = answers + '<td class="table-success">'
-						} else {
-							answers = answers + '<td class="table-danger">'
-						}
-						answers = answers + response[i]['T_'+j+'_ANSW'] + ';' + response[i]['T_'+j+'_ANSW_CORRECT'] + ';' + '</td>'
+						msg = msg + '<button class="btn" onclick="' + f + '">' + key + ': ' + value + '</button><br>'
 					}
-					let score = count_success/response[i]['COUNT']*100;
-					let score_style = ''
-					if (score > 80)
-						score_style = 'table-success'
-					else if (score > 60)
-						score_style = 'table-info'
-					else if (score > 30)
-						score_style = 'table-warning'
-					else
-						score_style = 'table-danger'
-					
-					
-					msg = msg + '<td class="'+score_style+'">' + String(score).slice(0, 3)+"%" + "</td>";
-					msg = msg + "<td>" + String(response[i]['TEST']).slice(0, max_len) + "</td>"
-					msg = msg + "<td>" + String(response[i]['TIME_START']).slice(0, 19) + "</td>"
-					msg = msg + answers;
-
-					msg = msg + '</tr>';
+					document.getElementById('C' + i).innerHTML = msg;
 				}
-				document.getElementById('DATA').innerHTML = msg;	
 
 			},
 			error => alert(`Rejected: ${error}`)
-		);	
-	}			
-					
+		);
 
-						
-				
-	</script>	
 
-  </body>
+		function results(TIME_START, NUM, LETTER, TEST) {
+			get_results(KEY, TIME_START, NUM, LETTER, TEST).then(
+				response => {
+					// get_results() Добавляем на страницу инфо о тесте
+					let msg = ""
+					for (let i = 0; i < response.length; i++) {
+						msg = msg + '<tr>';
+						msg = msg + '<th scope="row">' + '<a href="' + './test.html?UUID=' + response[i]['UUID'] + '">i</a>' + "</th>"
+						msg = msg + "<td>" + response[i]['NUM'] + "</td>"
+						msg = msg + "<td>" + response[i]['LETTER'] + "</td>"
+						msg = msg + "<td>" + String(response[i]['NAME']).slice(0, max_len) + "</td>"
+
+						let count_success = 0;
+						let answers = ''
+						for (let j = 1; j <= response[i]['COUNT']; j++) {
+							if (response[i]['T_' + j + '_ANSW'] == response[i]['T_' + j + '_ANSW_CORRECT']) {
+								count_success = count_success + 1;
+								answers = answers + '<td class="table-success">'
+							} else {
+								answers = answers + '<td class="table-danger">'
+							}
+							answers = answers + response[i]['T_' + j + '_ANSW'] + ';' + response[i]['T_' + j + '_ANSW_CORRECT'] + ';' + '</td>'
+						}
+						let score = count_success / response[i]['COUNT'] * 100;
+						let score_style = ''
+						if (score > 80)
+							score_style = 'table-success'
+						else if (score > 60)
+							score_style = 'table-info'
+						else if (score > 30)
+							score_style = 'table-warning'
+						else
+							score_style = 'table-danger'
+
+
+						msg = msg + '<td class="' + score_style + '">' + String(score).slice(0, 3) + "%" + "</td>";
+						msg = msg + "<td>" + String(response[i]['TEST']).slice(0, max_len) + "</td>"
+						msg = msg + "<td>" + String(response[i]['TIME_START']).slice(0, 19) + "</td>"
+						msg = msg + answers;
+
+						msg = msg + '</tr>';
+					}
+					document.getElementById('DATA').innerHTML = msg;
+
+				},
+				error => alert(`Rejected: ${error}`)
+			);
+		}
+
+
+
+
+	</script>
+
+</body>
+
 </html>
-
-
-
-

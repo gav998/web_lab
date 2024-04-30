@@ -1,226 +1,257 @@
 <!doctype html>
 <html lang="ru">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Форма тестирования</title>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Форма тестирования</title>
 	<link rel="icon" href="data:,">
-    <link href="./bootstrap.min.css" rel="stylesheet">
+	<link href="./bootstrap.min.css" rel="stylesheet">
 
 	<style type="text/css">
-	   #TASK_TEXT { 
-		background-image: url(bg_TASK_TEXT.png); /* Путь к фоновому рисунку */
-		background-position: left top; /* Положение фона */
-		background-repeat: repeat; /* Повторяем фон */
-		-webkit-user-select: none;
-		-khtml-user-select: none;
-		-moz-user-select: none;
-		-ms-user-select: none;
-		-o-user-select: none;
-		user-select: none;
-	   } 
-    </style>
-	
-  </head>
-  <body>
-    <script src="./bootstrap.bundle.min.js"></script>
+		#TASK_TEXT {
+			background-image: url(bg_TASK_TEXT.png);
+			/* Путь к фоновому рисунку */
+			background-position: left top;
+			/* Положение фона */
+			background-repeat: repeat;
+			/* Повторяем фон */
+			-webkit-user-select: none;
+			-khtml-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
+			-o-user-select: none;
+			user-select: none;
+		}
+	</style>
+
+</head>
+
+<body>
+	<script src="./bootstrap.bundle.min.js"></script>
 	<script src="./conf.js"></script>
 	<script src="./fn.js"></script>
-	
-	
-	<div class="container">
-	  <div class="row border-bottom border-primary py-3">
-		<div class="col d-grid gap-2 mx-auto">			
-		  <a id="HREF" class="btn btn-outline-primary" href=""></a>	
-		  <a id="LOCK" class="btn btn-outline-danger" style="display:none;" href="/">Тестирование завершено! Редактирование недоступно.</a>	
-		</div>
-	  </div>
-	</div>		
-	
-	
-	<div class="container">
-	  <div class="row border-bottom border-primary py-3">
-		<div class="col d-grid gap-2 d-md-block">
-		  <button class="btn border-0" id="TEST"></button>
-		  <button class="btn border-0" id="NAME"></button>
-		  <button class="btn border-0" id="NUM"></button>
-		  <button class="btn border-0" id="LETTER"></button>
-		  <button class="btn border-0" id="TIME_START"></button>	  
-		</div>
-	  </div>
-	</div>	
-	
-	<div class="container">
-	  <div class="row border-bottom border-primary py-3">
 
-		<div class="col btn-group" role="group" id='NAV_LIST'>
-		
-			<div class="text-center">
-			  <div class="spinner-border m-5" role="status">
-				<span class="visually-hidden">Loading...</span>
-			  </div>
+
+	<div class="container">
+		<div class="row border-bottom border-primary py-3">
+			<div class="col d-grid gap-2 mx-auto">
+				<a id="HREF" class="btn btn-outline-primary" href=""></a>
+				<a id="LOCK" class="btn btn-outline-danger" style="display:none;" href="/">Тестирование завершено!
+					Редактирование недоступно.</a>
 			</div>
-			
-		</div>		
+		</div>
+	</div>
 
-	  </div>
-	</div>	
-	
-	
+
 	<div class="container">
-	  <div class="row py-3">	  
-	  
-		<div class="col-8" id='TASK_TEXT'>
-
-			<div class="text-center">
-			  <div class="spinner-border m-5" role="status">
-				<span class="visually-hidden">Loading...</span>
-			  </div>
+		<div class="row border-bottom border-primary py-3">
+			<div class="col d-grid gap-2 d-md-block">
+				<button class="btn border-0" id="TEST"></button>
+				<button class="btn border-0" id="NAME"></button>
+				<button class="btn border-0" id="NUM"></button>
+				<button class="btn border-0" id="LETTER"></button>
+				<button class="btn border-0" id="TIME_START"></button>
 			</div>
-		
 		</div>
-		<div class="col-4 border-start border-primary">
-			<form onsubmit="return false;">
-			  <div class="mb-3">
-				<label for="ANSW" class="form-label">Ответ:</label>
-				<input type="text" class="form-control" id="ANSW" autocomplete="off">
-			  </div>
-			  <div class="col d-grid gap-2 d-md-block">
-			    <button class="btn btn-primary" onClick="answ();">Сохранить</button>
-			    <button class="btn btn-outline-success" id="ANSW_TIME" disabled></button>
-			  </div>
-			</form>
+	</div>
+
+	<div class="container">
+		<div class="row border-bottom border-primary py-3">
+
+			<div class="col btn-group" role="group" id='NAV_LIST'>
+
+				<div class="text-center">
+					<div class="spinner-border m-5" role="status">
+						<span class="visually-hidden">Loading...</span>
+					</div>
+				</div>
+
+			</div>
+
 		</div>
-	  </div>
+	</div>
+
+
+	<div class="container">
+		<div class="row py-3">
+
+			<div class="col-8" id='TASK_TEXT'>
+
+				<div class="text-center">
+					<div class="spinner-border m-5" role="status">
+						<span class="visually-hidden">Loading...</span>
+					</div>
+				</div>
+
+			</div>
+			<div class="col-4 border-start border-primary">
+				<form onsubmit="return false;">
+					<div class="mb-3">
+						<label for="ANSW" class="form-label">Ответ:</label>
+						<input type="text" class="form-control" id="ANSW" autocomplete="off">
+					</div>
+					<div class="col d-grid gap-2 d-md-block">
+						<button class="btn btn-primary" id="ANSW_BTN" onClick="answ();">Сохранить</button>
+						<button class="btn btn-outline-success" id="ANSW_TIME" disabled></button>
+					</div>
+				</form>
+			</div>
+		</div>
 	</div>
 
 
 	<script>
-				
 
-				
-	var values = read_GET_values();
-	var UUID = values["UUID"];
-	var task = 1;
-	set_task(task);
-	
-	// Вставка номеров заданий в блок навигации
-	function update_nav_list(task, count){
-		let active = "";
-		let nav_list = '<button class="btn btn-outline-danger" onclick="end()">Завершить</button>'
-		for(let i = 1; i<=count; i++){
-			if(i == task){
-				active = "btn-primary";
-			}else{
-				active = "btn-outline-primary";
-			}
-			nav_list = nav_list + '<button class="btn '+active+'" onClick="set_task('+i+');">'+i+'</button>';
-		}
-		return nav_list;
-	}  
-				
-	function set_task(t){
-		task = t;
-		get_task(UUID, task).then(
-			response => { 
-				// Добавляем на страницу инфо о тесте
-				document.getElementById('HREF').innerHTML = location.href;	
-				document.getElementById('HREF').href = location.href;
-				
-				count = response['COUNT'];
-				document.getElementById('NAV_LIST').innerHTML = update_nav_list(task, count);
-				
-				// Добавляем инфо о пользователе
 
-				document.getElementById('TEST').innerHTML = response['TEST'];
-				document.getElementById('NAME').innerHTML = response['NAME'];
-				document.getElementById('NUM').innerHTML = response['NUM'];
-				document.getElementById('LETTER').innerHTML = response['LETTER'];
-				document.getElementById('TIME_START').innerHTML = (response['TIME_START'] != null) ? response['TIME_START'].slice(0, 19) : "";
-				
-				// Проверяем блокировку теста и выводим информационное сообщение
-				document.getElementById('LOCK').style = (response['LOCK'] == 1) ? "" : "display:none;";						
-				
-				// Добавляем на страницу текст задания и ответ пользователя
-				// исполняемый js script
-				setInnerHtml(document.querySelector('#TASK_TEXT'), response['TASK_TEXT']);
-				// было
-				// document.getElementById('TASK_TEXT').innerHTML = response['TASK_TEXT'];
-				//pic
-				document.getElementById('TASK_TEXT').innerHTML += (response['TASK_PIC'] != null) ? '<img src="data:image/png;base64, '+response['TASK_PIC']+'" class="img-fluid" alt="Red dot" />' : "";
-				
-				document.getElementById('ANSW_TIME').innerHTML = (response['ANSW_TIME'] != null) ? response['ANSW_TIME'].slice(0, 19) : "";
-				document.getElementById('ANSW').value = response['ANSW'];	
 
-			},
-			error => alert(`Rejected: ${error}`)
-		);	
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	function answ(){
-		let answ = document.getElementById('ANSW').value
-		set_answ(UUID, task, answ).then(
-			response => {
-				document.getElementById('ANSW_TIME').innerHTML = (response['ANSW_TIME'] != null) ? response['ANSW_TIME'].slice(0, 19) : "";
-				if (task < count){
-					set_task(task+1);
+		var values = read_GET_values();
+		var UUID = values["UUID"];
+		var task = 1;
+		set_task(task);
+
+		// Вставка номеров заданий в блок навигации
+		function update_nav_list(task, count) {
+			let active = "";
+			let nav_list = '<button class="btn btn-outline-danger" onclick="end()">Завершить</button>'
+			for (let i = 1; i <= count; i++) {
+				if (i == task) {
+					active = "btn-primary";
+				} else {
+					active = "btn-outline-primary";
 				}
-			},
-			error => alert(`Rejected: ${error}`)
-		);	
-	}
-				
-				
-	</script>			
-			
-
-			
-	<script>				
-		function end(){
-			document.location.href = './result.html?UUID='+UUID;
+				nav_list = nav_list + '<button class="btn ' + active + '" onClick="set_task(' + i + ');">' + i + '</button>';
+			}
+			return nav_list;
 		}
-	</script>	
+
+		function set_task(t) {
+			task = t;
+			get_task(UUID, task).then(
+				response => {
+					// Добавляем на страницу инфо о тесте
+					document.getElementById('HREF').innerHTML = "КИМ № "+UUID.slice(0, 8);
+					document.getElementById('HREF').href = location.href;
+
+					count = response['COUNT'];
+					document.getElementById('NAV_LIST').innerHTML = update_nav_list(task, count);
+
+					// Добавляем инфо о пользователе
+
+					document.getElementById('TEST').innerHTML = response['TEST'];
+					document.getElementById('NAME').innerHTML = response['NAME'];
+					document.getElementById('NUM').innerHTML = response['NUM'];
+					document.getElementById('LETTER').innerHTML = response['LETTER'];
+					document.getElementById('TIME_START').innerHTML = (response['TIME_START'] != null) ? response['TIME_START'].slice(0, 19) : "";
+
+					// Проверяем блокировку теста и выводим информационное сообщение
+					document.getElementById('LOCK').style = (response['LOCK'] == 1) ? "" : "display:none;";
+					
+					//до установки исполняего js устанавливаем тип ответа
+					document.getElementById('ANSW').type="text"
+					document.getElementById('ANSW_BTN').onClick="answ();"
+
+					// Добавляем на страницу текст задания и ответ пользователя
+					// исполняемый js script
+					setInnerHtml(document.querySelector('#TASK_TEXT'), response['TASK_TEXT']);
+					// было
+					// document.getElementById('TASK_TEXT').innerHTML = response['TASK_TEXT'];
+					//pic
+					document.getElementById('TASK_TEXT').innerHTML += (response['TASK_PIC'] != null) ? '<img src="data:image/png;base64, ' + response['TASK_PIC'] + '" class="img-fluid" alt="Red dot" />' : "";
+
+					document.getElementById('ANSW_TIME').innerHTML = (response['ANSW_TIME'] != null) ? response['ANSW_TIME'].slice(0, 19) : "";
+					if (document.getElementById('ANSW').type=="text"){
+						document.getElementById('ANSW').value = response['ANSW'];
+					}
+					if (document.getElementById('ANSW').type=="file"){
+						document.getElementById('ANSW').value = response['ANSW'];
+					}
+					
+
+				},
+				error => alert(`Rejected: ${error}`)
+			);
+		}
+
+
+
+
+
+
+
+
+		function answ() {
+			if (document.getElementById('ANSW').type=="text"){
+				let answ = document.getElementById('ANSW').value
+				set_answ(UUID, task, answ).then(
+					response => {
+						document.getElementById('ANSW_TIME').innerHTML = (response['ANSW_TIME'] != null) ? response['ANSW_TIME'].slice(0, 19) : "";
+						if (task < count) {
+							set_task(task + 1);
+						}
+					},
+					error => alert(`Rejected: ${error}`)
+				);
+			}
+			if (document.getElementById('ANSW').type=="file"){
+				let answ = document.getElementById("ANSW").files[0];
+				set_answ_file(UUID, task, answ).then(
+					response => {
+						if (response['error'] != null){
+							alert(response['error'])
+						}
+						document.getElementById('ANSW_TIME').innerHTML = (response['ANSW_TIME'] != null) ? response['ANSW_TIME'].slice(0, 19) : "";
+						if (task < count) {
+							set_task(task + 1);
+						}
+					},
+					error => alert(`Rejected: ${error}`)
+				);
+			}		
+		}
+	</script>
+
 
 
 	<script>
-		document.oncontextmenu = function() {  
-			return false;  
-		};  
-		
-		document.onkeydown = function(e) {  
-			if (e.keyCode == 123) {  
-				return false;  
-			}  
-			if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) {  
-				return false;  
-			}  
-			if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) {  
-				return false;  
-			}  
-			if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) {  
-				return false;  
-			}  
-			if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) {  
-				return false;  
-			}  
-			if (e.ctrlKey && e.keyCode == 'С'.charCodeAt(0)) {  
-				return false;  
-			} 
-			if (e.ctrlKey && e.keyCode == 'C'.charCodeAt(0)) {  
-				return false;  
-			} 
+		function end() {
+			document.location.href = './result.html?UUID=' + UUID;
+		}
+	</script>
 
-			
+
+	<script>
+		document.oncontextmenu = function () {
+			return false;
+		};
+
+		document.onkeydown = function (e) {
+			if (e.keyCode == 123) {
+				return false;
+			}
+			if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) {
+				return false;
+			}
+			if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) {
+				return false;
+			}
+			if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) {
+				return false;
+			}
+			if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) {
+				return false;
+			}
+			if (e.ctrlKey && e.keyCode == 'С'.charCodeAt(0)) {
+				return false;
+			}
+			if (e.ctrlKey && e.keyCode == 'C'.charCodeAt(0)) {
+				return false;
+			}
+
+
 		}  
 	</script>
-	
+
 	<script>
 		function setInnerHtml(elm, html) {
 			console.log("setInnerHtml");
@@ -244,9 +275,9 @@
 					sc.setAttribute("src", currentScript.getAttribute("src"));
 				} else { // иначе создаем src из содержимого
 					// создадим Blob из строки
-					let myBlob = new Blob([currentScript.innerHTML], {type: 'text/javascript'});
+					let myBlob = new Blob([currentScript.innerHTML], { type: 'text/javascript' });
 					// ссылка на javascript
-					let objectURL = URL.createObjectURL(myBlob); 
+					let objectURL = URL.createObjectURL(myBlob);
 					sc.setAttribute("src", objectURL);
 				}
 				// по умолчанию он асинхронный
@@ -255,9 +286,10 @@
 				document.head.appendChild(sc);
 				console.log("Добавлен скрипт");
 				console.log(sc);
-		  }
+			}
 		}
 	</script>
 
-  </body>
+</body>
+
 </html>

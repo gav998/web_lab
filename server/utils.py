@@ -1,76 +1,91 @@
+# Встроенные модули
+from collections import Counter
 import datetime
-import sqlite3
+import json
 import os
 import subprocess
-import json
 from sys import platform
-from collections import Counter
+import sqlite3
 
+# Сторонние модули
 import base64
 from PIL import Image
 from io import BytesIO
 
-
 import urllib.parse as urllp
+
+
+_CURR_PATH = os.path.abspath(os.getcwd())
+_DB_PATH = _CURR_PATH + "/data.db"
+_TEST_PATH = _CURR_PATH + "/tests/"
+_USER_PATH = _CURR_PATH + "/user_files/"
+
 def encodeURI(s): return urllp.quote(s, safe="~@#$&()*!+=:;,.?/'")
 def decodeURI(s): return urllp.unquote(s, errors="strict")
 def encodeURIComponent(s): return urllp.quote(s, safe="~()*!.'")
 def decodeURIComponent(s): return urllp.unquote(s, errors="strict")
 
 def image_to_base64(image_path):
-    base64_str= ''
+    base64_str = ''  # Переменная для хранения строки в формате Base64
+
     try:
-        with Image.open(image_path) as img:
-            buffer = BytesIO()
-            img_format = img.format
-            img.save(buffer, format=img_format)
-            img_data = buffer.getvalue()
-        base64_str = base64.b64encode(img_data).decode('utf-8')
-    except Exception as e:
-        print(e)
-        base64_str = str(e)
-    return base64_str
+        with Image.open(image_path) as img:  # Открываем изображение
+            buffer = BytesIO()  # Создаем буфер для сохранения изображения
+            img_format = img.format  # Получаем формат изображения
+            img.save(buffer, format=img_format)  # Сохраняем изображение в буфере
+            img_data = buffer.getvalue()  # Получаем данные из буфера
 
-# from docx import Document
-# from htmldocx import HtmlToDocx
-# from docx.shared import Mm
+        base64_str = base64.b64encode(img_data).decode('utf-8')  # Преобразуем данные в формат Base64 и декодируем в строку
+    except Exception as e:  # В случае возникновения ошибки
+        print(e)  # Выводим сообщение об ошибке
+        base64_str = str(e)  # Преобразуем ошибку в строку
 
-# from io import BytesIO 
+    return base64_str  # Возвращаем строку в формате Base64
 
-CURR_PATH = os.path.abspath(os.getcwd())
-DB_PATH = CURR_PATH + "/data.db"
+
 
  
 def tbl_new_uuid(UUID, TEST, NAME, NUM, LETTER):
-    
+    # Генерация теста
     test = generate_test(TEST)
     if not test:
         return "Error: TEST.py not found"
     
+    # Формирование строки ключей для SQL-запроса
     keys = ', '.join([f'"{key}"' for key in test.keys()])
+    # Формирование строки заполнителей для SQL-запроса
     placeholders = ', '.join(['?' for _ in test.keys()])
     
+    # Формирование SQL-запроса
     sql = f'''
     INSERT 
       INTO tests(UUID, TEST, NAME, NUM, LETTER, TIME_START, {keys}) 
     VALUES (?, ?, ?, ?, ?, ?, {placeholders});    
     '''
     
+    # Формирование списка значений для выполнения SQL-запроса
+    NAME = NAME.upper()
     values = [UUID, TEST, NAME, NUM, LETTER, datetime.datetime.today()]  
     values.extend(test.values())
     values = tuple(values)
     
     try:
-        with sqlite3.connect(DB_PATH) as db:
+        # Установление соединения с базой данных
+        with sqlite3.connect(_DB_PATH) as db:
+            # Выполнение SQL-запроса
             db.execute(sql, values)
+            # Сохранение изменений в базе данных
             db.commit()
     except sqlite3.Error as e:
+        # Обработка и вывод ошибки выполнения SQL-запроса
         print(f"Error executing SQL query: {e}")
         return {"UUID": f"Error executing SQL query: {e}"}
     finally:
+        # Закрытие соединения с базой данных
         db.close()
         
     return {"UUID": UUID}
+
         
 def tbl_get_test(UUID, TASK):
     sql = '''
@@ -80,7 +95,7 @@ def tbl_get_test(UUID, TASK):
     values = tuple([UUID])
     
     try:   
-        with sqlite3.connect(DB_PATH) as db:
+        with sqlite3.connect(_DB_PATH) as db:
             column = db.execute(sql, values)
             column_names = [desc[0] for desc in column.description]
             column = column.fetchone()
@@ -143,7 +158,7 @@ def tbl_get_full_test_and_lock(UUID):
     '''
     sql2 = f'''SELECT * FROM tests WHERE UUID = (?);'''
     try:
-        with sqlite3.connect(DB_PATH) as db:
+        with sqlite3.connect(_DB_PATH) as db:
             db.execute(sql1, (UUID,)).fetchone()
             column = db.execute(sql2, (UUID,))
             column_names = [desc[0] for desc in column.description]
@@ -177,7 +192,73 @@ def tbl_set_answ(UUID, task, answ):
      WHERE UUID = (?) and LOCK = 0;
     '''
     try:
-        with sqlite3.connect(DB_PATH) as db:
+        with sqlite3.connect(_DB_PATH) as db:
+            answ_time = datetime.datetime.today()
+            db.execute(sql, (answ, answ_time, UUID,))
+        return {
+                        "ANSW_TIME": str(answ_time),
+                    }
+    except sqlite3.Error as e:
+        print(f"Error executing SQL query: {e}")
+        return {"TASK_TEXT": f"Error executing SQL query: {e}"}
+    finally:
+        db.close()
+
+    
+def tbl_upload_file(UUID, task, myFile):
+    if task.isdigit():
+        task = int(task)
+    else:
+        task = 1
+    
+    if ("/" in UUID or
+        "\\" in UUID or
+        "." in UUID or
+        ";" in UUID or
+        "'" in UUID or 
+        '"' in UUID):
+        UUID = 'error'
+    # TODO: закрыть уязвимость: возможность загружать файлы любого размера и любого расширения
+
+
+    # TODO: закрыть уязвимость: проверять есть ли возможность сохранить
+        # вначале сохранять и возврящать значение в зависимости от результата сохранения в бд
+    size = 0
+    try:
+        _, file_extension = os.path.splitext(myFile.filename)
+
+        if not file_extension in ['.doc', '.docx', '.odt', '.xls', '.xlsx', '.ppt', '.pptx', '.txt', '.kum', '.py']:
+            return {"error":f"Недопустимое расширение файла",}
+        
+        with open(_USER_PATH+f"{UUID}_{task}{file_extension}", 'wb') as out:
+            while True:
+                data = myFile.file.read(8192)
+                if not data:
+                    break
+                out.write(data)
+                size += len(data)
+        answ = f"{UUID}_{task}{file_extension}"
+        return tbl_set_answ(UUID, str(task), answ)
+    except:
+        return {"error": f"Файл не загружен"}
+
+
+
+
+    if task.isdigit():
+        task = int(task)
+    else:
+        task = 1
+    
+    sql = f'''
+    UPDATE tests 
+       SET 
+        T_{task}_ANSW = (?),
+        T_{task}_ANSW_TIME = (?)
+     WHERE UUID = (?) and LOCK = 0;
+    '''
+    try:
+        with sqlite3.connect(_DB_PATH) as db:
             answ_time = datetime.datetime.today()
             db.execute(sql, (answ, answ_time, UUID,))
         return {
@@ -191,15 +272,15 @@ def tbl_set_answ(UUID, task, answ):
 
 
 def generate_test(TEST):
-    if not TEST in os.listdir(path='./tests'):
+    if not TEST in os.listdir(path=f'{_TEST_PATH}'):
         return {}
         
     if "win" in platform:
-        result = subprocess.run(['python', f'./tests/{TEST}'],
+        result = subprocess.run(['python', f'{_TEST_PATH}{TEST}'],
                             stdout=subprocess.PIPE,
                             stderr=subprocess.PIPE)
     else:
-        result = subprocess.run(['python3', f'./tests/{TEST}'],
+        result = subprocess.run(['python3', f'{_TEST_PATH}{TEST}'],
                             stdout=subprocess.PIPE,
                             stderr=subprocess.PIPE)
     print(result.stdout, result.stderr)
@@ -218,7 +299,7 @@ def tbl_get_db():
     SELECT * FROM tests
     ORDER BY NAME, TIME_START DESC;
     '''
-    with sqlite3.connect(DB_PATH) as db:
+    with sqlite3.connect(_DB_PATH) as db:
         column = db.execute(sql)
         column_names = [desc[0] for desc in column.description]
         column = column.fetchall()
@@ -236,7 +317,7 @@ def tbl_get_headers():
     sql_3 = 'SELECT ("NUM" || "--" || "LETTER" || "--" || "TEST") FROM tests ORDER BY NUM, LETTER, TEST;'
     sql_4 = 'SELECT TEST FROM tests ORDER BY TEST;'
     sql_5 = 'SELECT (substring(TIME_START, 1, 10) || "--" || "NUM" || "--" || "LETTER" || "--" || "TEST") FROM tests ORDER BY TIME_START DESC, NUM, LETTER, TEST;'
-    with sqlite3.connect(DB_PATH) as db: 
+    with sqlite3.connect(_DB_PATH) as db: 
         db.row_factory = lambda cursor, row: row[0]
         d0 = dict(Counter(db.execute(sql_0).fetchall()))
         d1 = dict(Counter(db.execute(sql_1).fetchall()))
@@ -267,7 +348,7 @@ def tbl_get_results(TIME_START, NUM, LETTER, TEST):
               TEST,
               TIME_START DESC;
     '''
-    with sqlite3.connect(DB_PATH) as db:
+    with sqlite3.connect(_DB_PATH) as db:
         column = db.execute(sql, (TIME_START, NUM, LETTER, TEST,))
         column_names = [desc[0] for desc in column.description]
         column = column.fetchall()  
@@ -311,8 +392,8 @@ def get_40_tests(TEST):
 
 
 def tbl_backup():
-    backup_file = DB_PATH+'.backup.db'
-    db_file = DB_PATH
+    backup_file = _DB_PATH+'.backup.db'
+    db_file = _DB_PATH
     try:
         if os.path.exists(backup_file):
             os.remove(backup_file)
@@ -323,23 +404,26 @@ def tbl_backup():
         return True
     except:
         return False
+    finally:
+        source.close()
+        target.close()
         
         
 def get_test_py(TEST):
-    if not TEST in os.listdir(path='./tests'):
+    if not TEST in os.listdir(path=f'{_TEST_PATH}'):
         return {}
     
-    with open(f'./tests/{TEST}', encoding="utf-8") as code:
+    with open(f'{_TEST_PATH}{TEST}', encoding="utf-8") as code:
         return code.read()
         
 def save_test_py(TEST, CODE):
-    with open(f'./tests/{TEST}', 'w', encoding="utf-8") as code:
+    with open(f'{_TEST_PATH}{TEST}', 'w', encoding="utf-8") as code:
         code.write(decodeURIComponent(CODE))
     return {"TIME_SAVE": f"{datetime.datetime.today()}"}
         
 def del_test_py(TEST):
     try:
-        os.rename(f'./tests/{TEST}', f'./tests/_{TEST}')
+        os.rename(f'{_TEST_PATH}{TEST}', f'{_TEST_PATH}_{TEST}')
         print(f"Файл {TEST} скрыт успешно.")
     except OSError as e:
         print(f"Ошибка при скрытии файла {TEST}: {e}")
@@ -347,3 +431,5 @@ def del_test_py(TEST):
 
 if __name__ == "__main__":
     print(tbl_backup())
+
+
