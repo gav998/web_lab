@@ -1,0 +1,11 @@
+version: "2"
+authtoken: ВВЕДИТЕ_ВАШ_ТОКЕН
+
+
+tunnels:
+  jupyter:
+    proto: http
+    addr: 8888
+  weblab:
+    proto: http
+    addr: 9090

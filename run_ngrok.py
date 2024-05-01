@@ -14,10 +14,13 @@ def start_tunnels():
     # Определение операционной системы пользователя и запуск соответствующей команды
     if "win" in platform:
         # Если операционная система - Windows, запускаем ngrok с использованием команды 'start'
-        proc = subprocess.Popen("start ngrok http 9090", shell=True)
+        # proc = subprocess.Popen("start ngrok http 9090", shell=True)
+        proc = subprocess.Popen('start ngrok start --all --config="ngrok.yml', shell=True)
+        
     else:
         # Для других ОС (например, Linux) используем lxterminal для запуска ngrok
-        proc = subprocess.Popen("lxterminal -e ngrok http 9090", shell=True)
+        # proc = subprocess.Popen("lxterminal -e ngrok http 9090", shell=True)
+        proc = subprocess.Popen(["ngrok", "start", "--all", "--config=ngrok.yml"])
 
     time.sleep(5)  # Ожидаем 5 секунд для установления соединения с ngrok
     
@@ -30,7 +33,7 @@ def get_public_url():
     print("get_public_url")  # Вывод сообщения о начале работы функции
     
     # Получение данных о туннелях с помощью утилиты curl и сохранение их в файл tunnels.json
-    os.system("curl http://localhost:4040/api/tunnels > ./tunnels.json")
+    os.system("curl -s http://localhost:4040/api/tunnels > ./tunnels.json")
     
     # Открытие файла tunnels.json для чтения
     with open('./tunnels.json', 'rt') as data_file:
@@ -46,7 +49,11 @@ def get_public_url():
     # Проверка наличия информации о туннелях и возврат публичного URL, если он существует
     if 'tunnels' in j and len(j['tunnels']) > 0 and 'public_url' in j['tunnels'][0]:
         print('tunnels.json OK')  # Сообщение о наличии необходимых данных
-        return j['tunnels'][0]['public_url'] + '/'  # Возврат публичного URL с добавлением слэша
+        tunnels = {
+            j['tunnels'][0]['name']: j['tunnels'][0]['public_url'] + '/',
+            j['tunnels'][1]['name']: j['tunnels'][1]['public_url'] + '/',
+        }
+        return tunnels  # Возврат публичного URL с добавлением слэша jupyter, weblab
 
     else:
         print('tunnels.json unknown')  # Сообщение пользователю о непредвиденной структуре файла
@@ -91,11 +98,13 @@ def update_conf(public_url):
     print("update_conf")
     with open('./client/conf.js', "a") as conf_file:
         conf_file.write(f"// {datetime.datetime.today()}\n")
-        conf_file.write(f'server = "{public_url}"\n\n')
+        conf_file.write(f'server = "{public_url["weblab"]}";\n')
+        conf_file.write(f'server_lab = "{public_url["jupyter"]}";\n\n')
     if "win" in platform:
         os.system("start python ./upload_conf_ftp.py")
     else:
-        os.system("lxterminal -e python3 ./upload_conf_ftp.py")
+        # os.system("lxterminal -e python3 ./upload_conf_ftp.py")
+        os.system('source "venv_weblab/bin/activate" && python ./upload_conf_ftp.py')
 
 
 proc = start_tunnels()
