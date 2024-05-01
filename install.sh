@@ -10,7 +10,26 @@ echo "SCRIPT_DIR=$SCRIPT_DIR"
 
 # Запрашиваем пароль для JupyterLab
 echo "Enter password for JupyterLab admin panel:"
-read -s password
+read -s PASSWORD
+
+# Запрашиваем authtoken для ngrok TODO
+echo "Enter authtoken for ngrok:"
+read AUTHTOKEN_NGROK
+
+# Запрашиваем FTP TODO
+echo "Enter FTP:"
+read FTP_ADR
+
+# Запрашиваем FTP LOGIN TODO
+echo "Enter FTP LOGIN:"
+read FTP_LOGIN
+
+# Запрашиваем FTP PASSWORD TODO
+echo "Enter FTP PASSWORD:"
+read -s FTP_PASSWORD
+
+# Создаем KEY TODO
+SERVER_KEY_RESULTS=$(python -c "import uuid; print(str(uuid.uuid4()))")
 
 # Создаем виртуальное окружение
 echo "Creating virtual environment..."
@@ -28,7 +47,7 @@ sudo apt -y install git
 echo "Installing python requirements from requirements.txt..."
 pip install -r "${SCRIPT_DIR}/requirements.txt"
 
-JUPYTER_PASSWORD_HASH=$(python -c "from jupyter_server.auth import passwd; print(passwd('$password'))")
+JUPYTER_PASSWORD_HASH=$(python -c "from jupyter_server.auth import passwd; print(passwd('$PASSWORD'))")
 
 
 
