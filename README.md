@@ -39,6 +39,9 @@ At the moment, the server is an API only. This solution is suitable if you have 
 
 4. Install and base config `ngrok` from site [ngrok - download](https://ngrok.com/download) 
 For Windows you need copy ngrok.exe in project folder
+**or**
+4. Install and base config `clo` from site [clo - download](https://cloudpub.ru/) 
+For Windows you need copy clo.exe in project folder
 
 5. Edit file `config_ftp.txt`
 ```text
